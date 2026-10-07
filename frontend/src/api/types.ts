@@ -164,6 +164,7 @@ export interface SessionsQuery {
   formats: string[]
   languages: string[]
   bands: string[]
+  search: string
   sort: SessionSort
   page: number
 }

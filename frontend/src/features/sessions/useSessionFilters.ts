@@ -23,6 +23,7 @@ export function useSessionFilters() {
       formats: params.getAll('formats[]'),
       languages: params.getAll('languages[]'),
       bands: params.getAll('bands[]'),
+      search: params.get('search') ?? '',
       sort: sort && SORTS.includes(sort) ? sort : 'time_asc',
       page: Number.isInteger(page) && page > 0 ? page : 1,
     }
@@ -34,6 +35,7 @@ export function useSessionFilters() {
       const p = new URLSearchParams()
       p.set('date', next.date)
       for (const key of ARRAY_KEYS) for (const v of next[key]) p.append(`${key}[]`, v)
+      if (next.search.trim()) p.set('search', next.search)
       if (next.sort !== 'time_asc') p.set('sort', next.sort)
       if (keepPage && next.page > 1) p.set('page', String(next.page))
       setParams(p)
@@ -53,8 +55,9 @@ export function useSessionFilters() {
     setVenues: (venues: string[], formats: string[]) => write({ ...query, venues, formats }),
     setDate: (date: string) => write({ ...query, date }),
     setSort: (sort: SessionSort) => write({ ...query, sort }),
+    setSearch: (search: string) => write({ ...query, search }),
     setPage: (page: number) => write({ ...query, page }, true),
-    clearAll: () => write({ ...query, venues: [], formats: [], languages: [], bands: [] }),
-    activeCount: ARRAY_KEYS.reduce((n, k) => n + query[k].length, 0),
+    clearAll: () => write({ ...query, venues: [], formats: [], languages: [], bands: [], search: '' }),
+    activeCount: ARRAY_KEYS.reduce((n, k) => n + query[k].length, 0) + (query.search.trim() ? 1 : 0),
   }
 }

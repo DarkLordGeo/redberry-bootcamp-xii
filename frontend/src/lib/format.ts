@@ -38,6 +38,7 @@ export const dayLabel = (iso: string) => {
   return parseISODate(iso).toLocaleDateString('en-GB', { weekday: 'short' })
 }
 
+export const weekdayShort = (iso: string) => parseISODate(iso).toLocaleDateString('en-GB', { weekday: 'short' })
 export const dayNumber = (iso: string) => parseISODate(iso).getDate()
 export const monthShort = (iso: string) => parseISODate(iso).toLocaleDateString('en-GB', { month: 'short' })
 

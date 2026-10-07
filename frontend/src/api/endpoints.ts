@@ -91,6 +91,7 @@ export const fetchSessions = async (q: SessionsQuery) =>
         formats: q.formats,
         languages: q.languages,
         bands: q.bands,
+        search: q.search || undefined,
         sort: q.sort,
         page: q.page,
       },

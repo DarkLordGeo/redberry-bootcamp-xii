@@ -1,4 +1,4 @@
-import { dayLabel, dayNumber, monthShort, nextSevenDays } from '@/lib/format'
+import { dayNumber, nextSevenDays, weekdayShort } from '@/lib/format'
 
 /** Next 7 days, one selectable. `available` (when given) disables dates without sessions. */
 export function DatePicker({
@@ -27,13 +27,12 @@ export function DatePicker({
             disabled={empty}
             title={empty ? 'No sessions on this day' : undefined}
             onClick={() => onChange(d)}
-            className={`flex flex-col items-center rounded-md border py-2 transition-colors disabled:cursor-not-allowed disabled:opacity-35 ${
-              selected ? 'border-velvet bg-velvet text-screen' : 'border-line bg-ink-2 enabled:hover:border-mute'
-            }`}
+            className={`flex flex-col items-center gap-1 rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-35 ${
+              compact ? 'py-2' : 'py-3'
+            } ${selected ? 'bg-velvet text-screen' : 'bg-ink-3 enabled:hover:bg-line'}`}
           >
-            <span className={`text-[11px] font-semibold ${selected ? 'text-screen/80' : 'text-mute'}`}>{dayLabel(d)}</span>
-            <span className={`display ${compact ? 'text-[22px]' : 'text-[26px]'}`}>{dayNumber(d)}</span>
-            <span className={`text-[11px] ${selected ? 'text-screen/80' : 'text-mute'}`}>{monthShort(d)}</span>
+            <span className={`text-[11px] font-semibold ${selected ? 'text-screen' : 'text-mute'}`}>{weekdayShort(d)}</span>
+            <span className={`font-extrabold ${compact ? 'text-[13px]' : 'text-[18px]'}`}>{dayNumber(d)}</span>
           </button>
         )
       })}

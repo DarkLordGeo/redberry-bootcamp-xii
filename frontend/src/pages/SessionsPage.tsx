@@ -56,7 +56,7 @@ export default function SessionsPage() {
   return (
     <div className="mx-auto max-w-[1920px] px-16 pt-10">
       <h1 className="display text-[24px]">Sessions</h1>
-      <p className="mt-2 text-mute">{formatLongDate(query.date)}</p>
+      <p className="mt-2 text-xs text-mute">Showtimes across all venues · {formatLongDate(query.date)}</p>
 
       <div className="mt-8 flex items-start gap-8">
         <FiltersSidebar
@@ -69,7 +69,7 @@ export default function SessionsPage() {
 
         <section className="min-w-0 flex-1" aria-labelledby="results-count">
           <div className="mb-6 flex items-center justify-between gap-4">
-            <p id="results-count" className="text-[15px] text-mute" aria-live="polite">
+            <p id="results-count" className="text-[13px] font-semibold" aria-live="polite">
               {sessions.isPending
                 ? 'Finding sessions…'
                 : sessions.data?.meta.totalSessions
@@ -77,11 +77,11 @@ export default function SessionsPage() {
                   : 'No sessions found'}
             </p>
             <label className="flex items-center gap-3 text-sm">
-              <span className="text-mute">Sort by</span>
+              <span className="text-mute">Sort:</span>
               <select
                 value={query.sort}
                 onChange={(e) => setSort(e.target.value as SessionSort)}
-                className="h-10 rounded-md border border-line bg-ink-2 px-3 text-sm outline-none focus:border-velvet"
+                className="h-9 cursor-pointer rounded-full bg-transparent pr-2 text-[13px] font-bold outline-none focus-visible:ring-1 focus-visible:ring-velvet [&>option]:bg-ink-2"
               >
                 {sortOptions.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -110,25 +110,29 @@ export default function SessionsPage() {
             />
           ) : (
             <>
-              <ol className="space-y-6">
+              <ol className="divide-y divide-line/70">
                 {sessions.data.data.map(({ movie, sessions: list }) => {
                   // Guests can still click; the age check runs after they sign in.
                   const tooYoung = user?.age != null && user.age < movie.ageRating.minAge
                   return (
-                    <li key={movie.id} className="flex gap-6 rounded-lg border border-line bg-ink/40 p-5">
-                      <Link to={`/movies/${movie.slug}`} className="shrink-0" tabIndex={-1} aria-hidden>
-                        <Poster movie={movie} className="h-[150px] w-[100px]" />
-                      </Link>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-3">
-                          <h2 className="text-xl font-semibold">
-                            <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
-                              {movie.title}
-                            </Link>
-                          </h2>
-                          <AgeBadge rating={movie.ageRating} />
-                          <span className="text-sm text-mute">{formatRuntime(movie.runtimeMinutes)}</span>
+                    <li key={movie.id} className="py-6 first:pt-0">
+                      <div className="flex items-center gap-4">
+                        <Link to={`/movies/${movie.slug}`} className="shrink-0" tabIndex={-1} aria-hidden>
+                          <Poster movie={movie} className="h-[60px] w-[42px] rounded-md" />
+                        </Link>
+                        <div>
+                          <div className="flex items-center gap-2.5">
+                            <h2 className="text-[17px] font-extrabold">
+                              <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
+                                {movie.title}
+                              </Link>
+                            </h2>
+                            <AgeBadge rating={movie.ageRating} />
+                          </div>
+                          <p className="mt-1 text-xs text-mute">{formatRuntime(movie.runtimeMinutes)}</p>
                         </div>
+                      </div>
+                      <div className="min-w-0">
                         {tooYoung && <p className="mt-1 text-sm text-err">{ageGateMessage(movie.ageRating)}</p>}
                         <div className="mt-4 flex flex-wrap gap-3">
                           {list.map((s) => (
