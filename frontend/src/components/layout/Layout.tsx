@@ -16,8 +16,9 @@ export function Layout() {
           <p>Galleria Tbilisi · Vake Park · Rustaveli Palace · Batumi Boulevard</p>
         </div>
       </footer>
-      <AuthModals />
+      {/* Auth renders last so a login prompted mid-booking sits on top of the booking modal. */}
       <BookingModal />
+      <AuthModals />
       <ScrollRestoration />
     </div>
   )

@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import type { AgeRating, User } from '@/api/types'
+import { tokenStore } from '@/api/client'
+import { fetchMe } from '@/api/endpoints'
 import { ME_KEY, useAuth } from './auth'
 import { useModals } from './modals'
 import { useToast } from './toast'
@@ -32,6 +34,10 @@ export function useProtectedAction() {
   return useCallback(
     async (action: (user: User) => void | Promise<void>, opts: Options = {}) => {
       let current = user
+      // Session still being restored on boot: wait for it rather than asking a signed-in user to log in.
+      if (!current && tokenStore.get()) {
+        current = await qc.fetchQuery({ queryKey: ME_KEY, queryFn: fetchMe }).catch(() => null)
+      }
       if (!current) {
         const signedIn = await requestAuth('login')
         if (!signedIn) return

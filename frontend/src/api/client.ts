@@ -59,7 +59,7 @@ export const setUnauthorizedHandler = (fn: UnauthorizedHandler | null) => {
   onUnauthorized = fn
 }
 
-const AUTH_ENDPOINTS = ['/login', '/register', '/me']
+const AUTH_ENDPOINTS = ['/login', '/register', '/me', '/logout']
 
 type RetriableConfig = InternalAxiosRequestConfig & { _replayed?: boolean }
 

@@ -13,6 +13,9 @@ interface ModalProps {
   labelledBy?: string
 }
 
+/** Open modals, newest last: only the top one reacts to Escape (e.g. login opened over booking). */
+const stack: symbol[] = []
+
 /**
  * Shared modal: dimmed + blurred backdrop, closes on X, Escape and backdrop click.
  * Focus moves into the dialog on open and returns to the trigger on close.
@@ -25,8 +28,13 @@ export function Modal({ open, onClose, title, children, footer, width = 'max-w-m
   useEffect(() => {
     if (!open) return
     const previous = document.activeElement as HTMLElement | null
+    const id = Symbol('modal')
+    stack.push(id)
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCloseRef.current()
+      if (e.key === 'Escape' && stack[stack.length - 1] === id) {
+        e.stopPropagation()
+        onCloseRef.current()
+      }
     }
     document.addEventListener('keydown', onKey)
     const { overflow } = document.body.style
@@ -36,6 +44,7 @@ export function Modal({ open, onClose, title, children, footer, width = 'max-w-m
       ;(first ?? panelRef.current)?.focus()
     })
     return () => {
+      stack.splice(stack.indexOf(id), 1)
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = overflow
       previous?.focus?.()
