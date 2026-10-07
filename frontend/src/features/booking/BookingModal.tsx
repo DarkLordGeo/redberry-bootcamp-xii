@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ApiError } from '@/api/client'
 import { createHold, fetchHold, fetchSeatMap, fetchSession, releaseHold } from '@/api/endpoints'
 import type { Order, Seat, SeatHold, Session, TicketType, TicketTypeSlug } from '@/api/types'
-import { FormatBadge, LanguageBadge, AgeBadge } from '@/components/ui/Badges'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { ErrorState, Skeleton } from '@/components/ui/States'
@@ -42,28 +41,23 @@ const storage = {
   },
 }
 
+/** Segmented step bar from the design: Seats | Checkout, active half filled red. */
 function StepIndicator({ step }: { step: Step }) {
   const steps = [
-    { id: 'seats', label: 'Seats' },
-    { id: 'checkout', label: 'Checkout' },
+    { id: 'seats', label: '1. Seats' },
+    { id: 'checkout', label: '2. Checkout' },
   ] as const
-  const activeIndex = step === 'seats' ? 0 : 1
   return (
-    <ol className="flex items-center gap-3" aria-label="Booking steps">
-      {steps.map((s, i) => {
-        const done = i < activeIndex || step === 'done'
-        const active = i === activeIndex && step !== 'done'
+    <ol className="grid grid-cols-2 rounded-full bg-ink-3 p-1" aria-label="Booking steps">
+      {steps.map((s) => {
+        const active = s.id === step
         return (
-          <li key={s.id} className="flex items-center gap-3" aria-current={active ? 'step' : undefined}>
-            {i > 0 && <span aria-hidden className={`h-px w-10 ${done || active ? 'bg-brass' : 'bg-line'}`} />}
-            <span
-              className={`grid size-7 place-items-center rounded-full text-sm font-bold ${
-                active ? 'bg-velvet text-screen' : done ? 'bg-brass/25 text-brass' : 'bg-ink-3 text-mute'
-              }`}
-            >
-              {done ? '✓' : i + 1}
-            </span>
-            <span className={`text-sm font-semibold ${active ? 'text-screen' : 'text-mute'}`}>{s.label}</span>
+          <li
+            key={s.id}
+            aria-current={active ? 'step' : undefined}
+            className={`overline rounded-full py-2 text-center !text-[11px] ${active ? 'bg-velvet text-screen' : 'text-mute'}`}
+          >
+            {s.label}
           </li>
         )
       })}
@@ -71,20 +65,12 @@ function StepIndicator({ step }: { step: Step }) {
   )
 }
 
-function SessionHeader({ session, step }: { session: Session; step: Step }) {
+function SessionHeader({ session }: { session: Session }) {
   return (
-    <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-mute">
-        <AgeBadge rating={session.movie.ageRating} />
-        <span className="text-screen">{session.venue.name}</span>
-        <span>Hall {session.hall.name}</span>
-        <span>{formatLongDate(session.date)}</span>
-        <span className="font-semibold text-screen">{session.time}</span>
-        <FormatBadge format={session.format} />
-        <LanguageBadge language={session.language} />
-      </div>
-      <StepIndicator step={step} />
-    </div>
+    <p className="mt-1.5 text-xs text-mute">
+      {session.venue.name} · Hall {session.hall.name} · {formatLongDate(session.date)} · {session.time} · {session.format.name} ·{' '}
+      {session.language.name}
+    </p>
   )
 }
 
@@ -107,45 +93,57 @@ function BannerView({ banner, onDismiss }: { banner: Banner; onDismiss: () => vo
 
 function Confirmation({ order, onTickets, onClose }: { order: Order; onTickets: () => void; onClose: () => void }) {
   const s = order.session
+  const counts = order.tickets.reduce<Record<string, number>>((acc, t) => ({ ...acc, [t.ticketType.name]: (acc[t.ticketType.name] ?? 0) + 1 }), {})
   return (
-    <div className="mx-auto flex max-w-[620px] flex-col items-center py-6 text-center">
-      <div className="grid size-16 place-items-center rounded-full bg-ok/15 text-ok">
-        <svg viewBox="0 0 24 24" className="size-8" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+    <div className="mx-auto flex max-w-[560px] flex-col items-center py-4 text-center">
+      <div className="grid size-14 place-items-center rounded-full bg-ok text-ink">
+        <svg viewBox="0 0 24 24" className="size-7" fill="none" stroke="currentColor" strokeWidth="2.8" aria-hidden>
           <path d="M5 12.5l4.5 4.5L19 7.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      <h3 className="display mt-5 text-[48px]">You’re booked</h3>
-      <p className="mt-2 text-mute">A confirmation has been sent to {order.contact.email}.</p>
-      <p className="mt-6 text-sm text-mute">Order reference</p>
-      <p className="display text-[28px] text-velvet">{order.reference}</p>
+      <h3 className="display mt-5 text-[24px]">Booking confirmed!</h3>
+      <p className="mt-2 text-sm text-mute">Your tickets are ready. We’ve sent the confirmation to {order.contact.email}.</p>
+      <p className="overline mt-5 rounded-full bg-ink-3 px-4 py-2 !text-[11px]">Order {order.reference}</p>
 
-      <div className="mt-8 w-full rounded-lg border border-line bg-ink p-5 text-left">
-        <p className="text-lg font-semibold">{s.movie.title}</p>
-        <p className="mt-1 text-sm text-mute">
-          {s.venue.name} · Hall {s.hall.name} · {formatLongDate(s.date)} · {s.time} · {s.format.name} · {s.language.name}
-        </p>
-        <ul className="mt-4 divide-y divide-line border-t border-line">
-          {order.tickets.map((t) => (
-            <li key={t.id} className="flex items-center justify-between py-2.5 text-[15px]">
-              <span>
-                Seat <span className="font-semibold">{t.seatCode}</span> · {t.ticketType.name}
-              </span>
-              <span>{formatPrice(t.price)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-2 flex items-center justify-between border-t border-line pt-3 font-semibold">
-          <span>Total paid</span>
-          <span className="text-brass">{formatPrice(order.totalPrice)}</span>
+      <div className="mt-6 w-full rounded-2xl bg-ink-3/60 p-5 text-left">
+        <div className="flex items-center gap-4 border-b border-line/70 pb-4">
+          {s.movie.posterUrl && <img src={s.movie.posterUrl} alt="" className="h-16 w-11 rounded-md object-cover" />}
+          <div>
+            <p className="font-extrabold uppercase">{s.movie.title}</p>
+            <p className="mt-1 text-xs text-mute">
+              {s.venue.name} · Hall {s.hall.name} · {formatLongDate(s.date)} · {s.time}
+            </p>
+          </div>
         </div>
-        <p className="mt-1 text-right text-xs text-mute">Card ending {order.cardLastFour}</p>
+        <dl className="space-y-2.5 py-4 text-sm">
+          <div className="flex justify-between">
+            <dt className="text-mute">Seats</dt>
+            <dd className="font-semibold">{order.tickets.map((t) => t.seatCode).join(', ')}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-mute">Tickets</dt>
+            <dd className="font-semibold">
+              {Object.entries(counts)
+                .map(([name, n]) => `${n} × ${name}`)
+                .join(', ')}
+            </dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-mute">Card</dt>
+            <dd className="font-semibold">•••• {order.cardLastFour}</dd>
+          </div>
+        </dl>
+        <div className="flex items-center justify-between border-t border-line/70 pt-4">
+          <span className="overline text-mute">Total paid</span>
+          <span className="display text-[24px]">{formatPrice(order.totalPrice)}</span>
+        </div>
       </div>
 
-      <div className="mt-8 flex gap-3">
+      <div className="mt-7 flex gap-3">
+        <Button onClick={onTickets}>My Tickets</Button>
         <Button variant="secondary" onClick={onClose}>
           Close
         </Button>
-        <Button onClick={onTickets}>My Tickets</Button>
       </div>
     </div>
   )
@@ -314,9 +312,16 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
     <Modal
       open
       onClose={close}
-      title={step === 'done' ? 'Booking confirmed' : title}
-      width="max-w-[1240px]"
-      header={session.data && step !== 'done' ? <SessionHeader session={session.data} step={step} /> : undefined}
+      title={step === 'done' ? <span className="sr-only">Booking confirmed</span> : <span className="uppercase">{title}</span>}
+      width={step === 'done' ? 'max-w-[680px]' : 'max-w-[1240px]'}
+      header={
+        session.data && step !== 'done' ? (
+          <div className="flex items-start justify-between gap-6 pr-4">
+            <SessionHeader session={session.data} />
+            {hold && <HoldTimer expiresAt={hold.expiresAt} onExpire={() => expire()} />}
+          </div>
+        ) : undefined
+      }
     >
       {loading ? (
         <div className="flex gap-8" aria-busy="true" aria-label="Loading hall map">
@@ -356,8 +361,10 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
             </div>
           )}
 
-          <div className="flex items-start gap-8">
-            <div className="min-w-0 flex-1 rounded-lg border border-line bg-ink px-6 py-8">
+          <div className="flex items-stretch gap-6">
+            <div className="min-w-0 flex-1">
+              <StepIndicator step={step} />
+              <div className="mt-5">
               {step === 'seats' ? (
                 <SeatMap
                   map={seatMap.data!}
@@ -383,74 +390,89 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
                   />
                 )
               )}
+              </div>
             </div>
 
-            <aside className="sticky top-0 w-[380px] shrink-0 rounded-lg border border-line bg-ink p-5" aria-label="Order summary">
-              {hold && <HoldTimer expiresAt={hold.expiresAt} onExpire={() => expire()} />}
-              <h3 className={`text-lg font-semibold ${hold ? 'mt-5' : ''}`}>
-                {step === 'seats' ? 'Your seats' : 'Order summary'}
+            <aside className="flex w-[360px] shrink-0 flex-col" aria-label="Order summary">
+              <h3 className="text-[15px] font-extrabold">
+                {step === 'seats' ? `Your seats · Max ${maxSeats}` : 'Summary'}
               </h3>
-              <p className="mt-1 text-sm text-mute">
-                {selection.size} of {maxSeats} seats selected
+              <p className="mt-1.5 text-xs text-mute">
+                {step === 'seats'
+                  ? `Pick up to ${maxSeats} seats from the map. Each seat can carry its own ticket type.`
+                  : `${selection.size} of ${maxSeats} seats held for you`}
               </p>
 
               {step === 'checkout' && hold ? (
-                <ul className="mt-4 divide-y divide-line border-y border-line">
-                  {hold.seats.map((s) => (
-                    <li key={s.seatId} className="flex items-center justify-between py-3 text-[15px]">
-                      <span>
-                        <span className="font-semibold">{s.code}</span>
-                        <span className="text-mute"> · {seatIndex.get(s.seatId)?.section}</span>
-                        <span className="block text-sm text-mute">{s.ticketType.name}</span>
-                      </span>
-                      <span>{formatPrice(s.price)}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-4 rounded-2xl bg-ink-3/60 p-4">
+                  <p className="font-extrabold uppercase">{session.data?.movie.title}</p>
+                  <p className="mt-1 text-xs text-mute">
+                    {session.data && `${formatLongDate(session.data.date)} · ${session.data.time}`}
+                  </p>
+                  <ul className="mt-3 divide-y divide-line/70 border-t border-line/70">
+                    {hold.seats.map((s) => (
+                      <li key={s.seatId} className="flex items-center justify-between py-2.5 text-[13px]">
+                        <span>
+                          <span className="font-bold">{s.code}</span>
+                          <span className="text-mute">
+                            {' '}
+                            · {seatIndex.get(s.seatId)?.section} · {s.ticketType.name}
+                          </span>
+                        </span>
+                        <span className="font-semibold">{formatPrice(s.price)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : lines.length === 0 ? (
-                <p className="mt-4 rounded-md border border-dashed border-line px-4 py-6 text-center text-sm text-mute">
-                  Pick seats on the map. You can choose up to {maxSeats}.
+                <p className="mt-4 rounded-2xl border border-dashed border-line px-4 py-8 text-center text-xs text-mute">
+                  No seats selected yet.
                 </p>
               ) : (
-                <ul className="mt-4 divide-y divide-line border-y border-line">
+                <ul className="mt-4 space-y-3">
                   {lines.map((l) => (
-                    <li key={l.seatId} className="py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[15px]">
-                            <span className="font-semibold">{l.code}</span>
-                            <span className="text-mute"> · {l.section}</span>
-                          </p>
-                        </div>
-                        <label className="sr-only" htmlFor={`tt-${l.seatId}`}>
-                          Ticket type for seat {l.code}
-                        </label>
-                        <select
-                          id={`tt-${l.seatId}`}
-                          value={l.slug}
-                          onChange={(e) =>
-                            setSelection((cur) => new Map(cur).set(l.seatId, e.target.value as TicketTypeSlug))
-                          }
-                          className={`h-9 rounded-md border bg-ink-3 px-2 text-sm outline-none focus:border-velvet ${l.blocked ? 'border-err' : 'border-line'}`}
-                        >
-                          {ticketTypes.map((t) => (
-                            <option key={t.slug} value={t.slug}>
-                              {t.name} ({Math.round(t.priceRatio * 100)}%)
-                            </option>
-                          ))}
-                        </select>
-                        <span className="w-16 text-right text-[15px]">{formatPrice(l.price)}</span>
+                    <li key={l.seatId} className={`rounded-2xl bg-ink-3/60 p-3 ${l.blocked ? 'ring-1 ring-err' : ''}`}>
+                      <div className="flex items-center gap-3 px-1">
+                        <p className="min-w-0 flex-1 text-[13px]">
+                          <span className="text-mute">Seat </span>
+                          <span className="font-bold">{l.code}</span>
+                          <span className="text-mute"> · {l.section}</span>
+                        </p>
+                        <span className="text-[13px] font-bold">{formatPrice(l.price)}</span>
                         <button
-                          onClick={() => setSelection((cur) => {
-                            const next = new Map(cur)
-                            next.delete(l.seatId)
-                            return next
-                          })}
+                          onClick={() =>
+                            setSelection((cur) => {
+                              const next = new Map(cur)
+                              next.delete(l.seatId)
+                              return next
+                            })
+                          }
                           aria-label={`Remove seat ${l.code}`}
-                          className="text-mute hover:text-screen"
+                          className="grid size-6 place-items-center rounded-full text-mute hover:bg-line hover:text-screen"
                         >
                           ×
                         </button>
+                      </div>
+                      <div role="radiogroup" aria-label={`Ticket type for seat ${l.code}`} className="mt-2.5 grid grid-cols-3 gap-1.5">
+                        {[...ticketTypes]
+                          .sort((a, b) => a.priceRatio - b.priceRatio)
+                          .map((t) => {
+                            const on = t.slug === l.slug
+                            return (
+                              <button
+                                key={t.slug}
+                                type="button"
+                                role="radio"
+                                aria-checked={on}
+                                onClick={() => setSelection((cur) => new Map(cur).set(l.seatId, t.slug))}
+                                className={`h-8 rounded-full text-[11px] font-bold transition-colors ${
+                                  on ? 'bg-velvet text-screen' : 'bg-ink-3 text-mute hover:text-screen'
+                                }`}
+                              >
+                                {t.name} {Math.round(t.priceRatio * 100)}%
+                              </button>
+                            )
+                          })}
                       </div>
                       {l.blocked && (
                         <p className="mt-1.5 text-[13px] text-err" role="alert">
@@ -463,8 +485,8 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
                 </ul>
               )}
 
-              <div className="mt-4 flex items-center justify-between">
-                <span className="font-semibold">{step === 'checkout' ? 'Total' : 'Subtotal'}</span>
+              <div className="mt-auto flex items-center justify-between pt-6">
+                <span className="overline text-mute">Subtotal</span>
                 <span className="display text-[28px] text-screen">
                   {formatPrice(step === 'checkout' && hold ? hold.subtotal : subtotal)}
                 </span>
@@ -472,8 +494,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
 
               {step === 'seats' && (
                 <Button
-                  size="lg"
-                  className="mt-5 w-full"
+                  className="mt-4 w-full"
                   disabled={!canContinue}
                   loading={holdMutation.isPending}
                   onClick={() => holdMutation.mutate()}

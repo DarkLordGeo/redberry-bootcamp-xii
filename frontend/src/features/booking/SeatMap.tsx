@@ -2,12 +2,13 @@ import type { Seat, SeatMap as SeatMapData } from '@/api/types'
 
 export type SeatView = 'available' | 'selected' | 'sold' | 'held' | 'unavailable'
 
+const hatch = 'bg-[repeating-linear-gradient(135deg,rgb(255_255_255/0.14)_0_2px,transparent_2px_6px)]'
 const seatClass: Record<SeatView, string> = {
-  available: 'border-mute/70 bg-transparent text-mute hover:border-velvet hover:text-screen',
+  available: 'border-line bg-ink-3 text-screen hover:border-velvet',
   selected: 'border-velvet bg-velvet text-screen',
-  sold: 'border-transparent bg-ink-3 text-transparent',
-  held: 'border-brass/40 bg-[repeating-linear-gradient(135deg,color-mix(in_oklab,var(--color-brass)_35%,transparent)_0_3px,transparent_3px_7px)] text-transparent',
-  unavailable: 'border-dashed border-line bg-transparent text-transparent',
+  sold: `border-line/60 bg-ink-2 text-transparent ${hatch}`,
+  held: 'border-brass/50 bg-brass/15 text-transparent',
+  unavailable: 'border-dashed border-line/60 bg-transparent text-transparent',
 }
 
 export const SEAT_LEGEND: { view: SeatView; label: string }[] = [
@@ -19,7 +20,7 @@ export const SEAT_LEGEND: { view: SeatView; label: string }[] = [
 ]
 
 export function SeatSwatch({ view }: { view: SeatView }) {
-  return <span aria-hidden className={`inline-block size-5 rounded-t-md rounded-b-sm border-2 ${seatClass[view]}`} />
+  return <span aria-hidden className={`inline-block size-4 rounded-[5px] border ${seatClass[view]}`} />
 }
 
 /** Seat state for the viewer. `isMine` seats are held by this user, so they count as their own selection. */
@@ -49,25 +50,16 @@ export function SeatMap({
 }) {
   return (
     <div className="flex flex-col items-center">
-      {/* The screen: a lit arc the whole auditorium faces. */}
-      <div className="relative mb-10 w-full max-w-[640px]" aria-hidden>
-        <svg viewBox="0 0 640 40" className="w-full">
-          <defs>
-            <linearGradient id="screen-glow" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor="var(--color-screen)" stopOpacity="0.35" />
-              <stop offset="1" stopColor="var(--color-screen)" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <path d="M10 30 Q320 -6 630 30 L630 40 Q320 4 10 40 Z" fill="url(#screen-glow)" />
-          <path d="M10 30 Q320 -6 630 30" fill="none" stroke="var(--color-screen)" strokeWidth="3" strokeLinecap="round" />
-        </svg>
-        <p className="mt-1 text-center text-xs text-mute">Screen</p>
+      <div className="mb-8 w-full max-w-[560px] rounded-md bg-ink-3 py-1.5 text-center" aria-hidden>
+        <span className="overline !text-[10px] text-mute">Screen</span>
       </div>
 
       <div className="flex flex-col gap-8">
         {map.sections.map((section) => (
           <div key={section.name} role="group" aria-label={section.name} className="flex flex-col items-center gap-2">
-            <p className="mb-1 text-[13px] font-semibold text-mute">{section.name}</p>
+            <p className="overline mb-2 !text-[10px] text-mute">
+              {section.name} · Rows {section.rows[0]?.label}–{section.rows[section.rows.length - 1]?.label}
+            </p>
             {section.rows.map((row) => (
               <div key={row.label} className="flex items-center gap-3">
                 <span className="w-5 text-right text-xs font-semibold text-mute">{row.label}</span>
@@ -85,7 +77,7 @@ export function SeatMap({
                         aria-label={`Seat ${seat.code}, ${SEAT_LEGEND.find((l) => l.view === view)?.label}`}
                         title={`${seat.code} · ${section.name}`}
                         onClick={() => onToggle(seat)}
-                        className={`grid size-8 place-items-center rounded-t-lg rounded-b-sm border-2 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed ${seatClass[view]} ${
+                        className={`grid size-9 place-items-center rounded-lg border text-xs font-bold transition-colors disabled:cursor-not-allowed ${seatClass[view]} ${
                           seat.aisleAfter ? 'mr-5' : ''
                         }`}
                       >
@@ -101,7 +93,7 @@ export function SeatMap({
         ))}
       </div>
 
-      <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Seat legend">
+      <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Seat legend">
         {SEAT_LEGEND.map((l) => (
           <li key={l.view} className="flex items-center gap-2 text-[13px] text-mute">
             <SeatSwatch view={l.view} />

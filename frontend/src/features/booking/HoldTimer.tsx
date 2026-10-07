@@ -29,14 +29,10 @@ export function HoldTimer({ expiresAt, onExpire }: { expiresAt: string; onExpire
     <div
       role="timer"
       aria-label={`Seats held for ${formatCountdown(left)}`}
-      className={`flex items-center gap-2.5 rounded-md border px-3 py-2 ${urgent ? 'border-err/60 text-err' : 'border-brass/50 text-brass'}`}
+      className={`shrink-0 rounded-lg border px-3 py-1.5 text-center ${urgent ? 'border-err/60 bg-err/10' : 'border-line bg-ink-3'}`}
     >
-      <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-        <circle cx="10" cy="11" r="6.5" />
-        <path d="M10 7.5V11l2.2 1.6M8 2.5h4" strokeLinecap="round" />
-      </svg>
-      <span className="text-sm">Seats held for</span>
-      <span className="display w-[3.2ch] text-[22px] tabular-nums">{formatCountdown(left)}</span>
+      <p className="overline !text-[10px] text-mute">Seats held</p>
+      <p className={`mt-0.5 text-[15px] font-extrabold tabular-nums ${urgent ? 'text-err' : ''}`}>{formatCountdown(left)}</p>
     </div>
   )
 }
