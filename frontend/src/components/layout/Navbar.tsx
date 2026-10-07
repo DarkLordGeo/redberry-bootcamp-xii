@@ -130,7 +130,7 @@ export function Navbar() {
         <nav aria-label="Main">
           <NavLink
             to="/sessions"
-            className={({ isActive }) => `overline transition-colors ${isActive ? 'text-screen' : 'text-mute hover:text-screen'}`}
+            className={({ isActive }) => `eyebrow transition-colors ${isActive ? 'text-screen' : 'text-mute hover:text-screen'}`}
           >
             Sessions
           </NavLink>

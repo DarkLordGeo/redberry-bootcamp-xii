@@ -156,7 +156,7 @@ export function SearchBox() {
           ) : (
             <>
               <div className="flex items-center justify-between px-4 pb-2 pt-4">
-                <span className="overline text-mute">Films &amp; events</span>
+                <span className="eyebrow text-mute">Films &amp; events</span>
                 <span className="text-xs text-mute">
                   {items.length} {items.length === 1 ? 'result' : 'results'}
                 </span>

@@ -18,7 +18,7 @@ import NotFoundPage from './NotFoundPage'
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <dt className="overline !text-[11px] text-mute">{label}</dt>
+      <dt className="eyebrow !text-[11px] text-mute">{label}</dt>
       <dd className="mt-1.5 text-sm font-semibold">{children}</dd>
     </div>
   )
@@ -144,7 +144,7 @@ export default function MoviePage() {
         <div className="relative mx-auto flex max-w-[1920px] items-end gap-12 px-16 pb-16 pt-[136px]">
           <Poster movie={m} className="aspect-[2/3] w-[280px] shrink-0 rounded-2xl shadow-2xl shadow-black/60" />
           <div className="min-w-0 max-w-[760px] pb-2">
-            <span className="overline text-velvet">
+            <span className="eyebrow text-velvet">
               {m.isComingSoon ? `Coming soon · ${formatReleaseDate(m.releaseDate)}` : m.genres.map((g) => g.name).join(' / ')}
             </span>
             <h1 className="display mt-3 text-[40px] uppercase [text-wrap:balance]">{m.title}</h1>
@@ -196,7 +196,7 @@ export default function MoviePage() {
           </dl>
           {restricted && (
             <div className="mt-6 rounded-xl border border-brass/40 bg-brass/10 px-4 py-3">
-              <p className="overline text-brass">Warning</p>
+              <p className="eyebrow text-brass">Warning</p>
               <p className="mt-1.5 text-xs leading-[1.3] text-screen/90">
                 <span className="font-bold text-velvet">{m.ageRating.code}</span> · {m.ageRating.description}
               </p>

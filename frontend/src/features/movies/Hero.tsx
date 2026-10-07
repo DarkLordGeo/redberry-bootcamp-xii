@@ -89,7 +89,7 @@ export function Hero({
 
       <div className="relative mx-auto flex h-full max-w-[1920px] flex-col justify-end px-16 pb-36">
         <div key={current.id} className="max-w-[620px] motion-safe:animate-[fadeUp_700ms_ease-out]">
-          <span className="overline inline-block rounded-sm bg-velvet/15 px-2.5 py-1.5 !text-[11px] text-velvet">
+          <span className="eyebrow inline-block rounded-sm bg-velvet/15 px-2.5 py-1.5 !text-[11px] text-velvet">
             {current.isComingSoon ? 'Coming soon' : 'Now showing'} · {current.genres.map((g) => g.name).slice(0, 2).join(' / ')}
           </span>
           <h1 className="display mt-4 text-[40px] uppercase [text-wrap:balance]">{current.title}</h1>

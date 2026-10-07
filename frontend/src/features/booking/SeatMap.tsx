@@ -51,13 +51,13 @@ export function SeatMap({
   return (
     <div className="flex flex-col items-center">
       <div className="mb-8 w-full max-w-[560px] rounded-md bg-ink-3 py-1.5 text-center" aria-hidden>
-        <span className="overline !text-[10px] text-mute">Screen</span>
+        <span className="eyebrow !text-[10px] text-mute">Screen</span>
       </div>
 
       <div className="flex flex-col gap-8">
         {map.sections.map((section) => (
           <div key={section.name} role="group" aria-label={section.name} className="flex flex-col items-center gap-2">
-            <p className="overline mb-2 !text-[10px] text-mute">
+            <p className="eyebrow mb-2 !text-[10px] text-mute">
               {section.name} · Rows {section.rows[0]?.label}–{section.rows[section.rows.length - 1]?.label}
             </p>
             {section.rows.map((row) => (

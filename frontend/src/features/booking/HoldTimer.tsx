@@ -31,7 +31,7 @@ export function HoldTimer({ expiresAt, onExpire }: { expiresAt: string; onExpire
       aria-label={`Seats held for ${formatCountdown(left)}`}
       className={`shrink-0 rounded-lg border px-3 py-1.5 text-center ${urgent ? 'border-err/60 bg-err/10' : 'border-line bg-ink-3'}`}
     >
-      <p className="overline !text-[10px] text-mute">Seats held</p>
+      <p className="eyebrow !text-[10px] text-mute">Seats held</p>
       <p className={`mt-0.5 text-[15px] font-extrabold tabular-nums ${urgent ? 'text-err' : ''}`}>{formatCountdown(left)}</p>
     </div>
   )

@@ -17,7 +17,7 @@ const REFUND_CLOSED = 'Refunds close 2 hours before the session starts.'
 function Info({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <p className="overline !text-[10px] text-mute">{label}</p>
+      <p className="eyebrow !text-[10px] text-mute">{label}</p>
       <p className="mt-1.5 text-[13px] font-semibold">{children}</p>
     </div>
   )
@@ -59,7 +59,7 @@ function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) =
           </Info>
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
-          <span className="overline mr-1 !text-[10px] text-mute">Seats</span>
+          <span className="eyebrow mr-1 !text-[10px] text-mute">Seats</span>
           {order.tickets.map((t) => (
             <span key={t.id} className="rounded-md bg-white/10 px-2 py-1 text-[11px] font-semibold">
               {t.seatCode} · {t.ticketType.name}
@@ -68,7 +68,7 @@ function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) =
         </div>
       </div>
       <div className="flex w-[240px] shrink-0 flex-col">
-        <p className="overline !text-[10px] text-mute">Order</p>
+        <p className="eyebrow !text-[10px] text-mute">Order</p>
         <p className="mt-1 text-[13px] font-bold">#{order.reference}</p>
         <div className="mt-auto flex items-end justify-between pb-3">
           <span className="text-xs text-mute">{refunded ? 'Refunded' : 'Total paid'}</span>

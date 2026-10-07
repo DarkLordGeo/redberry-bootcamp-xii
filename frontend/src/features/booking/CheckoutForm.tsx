@@ -90,7 +90,7 @@ export function CheckoutForm({
     >
       <FormError message={formError} />
       <fieldset className="grid grid-cols-2 gap-4">
-        <legend className="overline mb-3 !text-[11px] text-mute">Your details</legend>
+        <legend className="eyebrow mb-3 !text-[11px] text-mute">Your details</legend>
         <div className="col-span-2">
           <TextField id="co-name" label="Full Name" autoComplete="name" required {...fieldState(form, 'fullName')} {...form.register('fullName')} />
         </div>
@@ -109,7 +109,7 @@ export function CheckoutForm({
       </fieldset>
 
       <fieldset className="grid grid-cols-4 gap-4 border-t border-line/70 pt-5">
-        <legend className="overline mb-3 !text-[11px] text-mute">Card</legend>
+        <legend className="eyebrow mb-3 !text-[11px] text-mute">Card</legend>
         <div className="col-span-4">
           <TextField
             id="co-card"

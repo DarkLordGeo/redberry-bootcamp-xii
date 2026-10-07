@@ -55,7 +55,7 @@ function StepIndicator({ step }: { step: Step }) {
           <li
             key={s.id}
             aria-current={active ? 'step' : undefined}
-            className={`overline rounded-full py-2 text-center !text-[11px] ${active ? 'bg-velvet text-screen' : 'text-mute'}`}
+            className={`eyebrow rounded-full py-2 text-center !text-[11px] ${active ? 'bg-velvet text-screen' : 'text-mute'}`}
           >
             {s.label}
           </li>
@@ -103,7 +103,7 @@ function Confirmation({ order, onTickets, onClose }: { order: Order; onTickets: 
       </div>
       <h3 className="display mt-5 text-[24px]">Booking confirmed!</h3>
       <p className="mt-2 text-sm text-mute">Your tickets are ready. We’ve sent the confirmation to {order.contact.email}.</p>
-      <p className="overline mt-5 rounded-full bg-ink-3 px-4 py-2 !text-[11px]">Order {order.reference}</p>
+      <p className="eyebrow mt-5 rounded-full bg-ink-3 px-4 py-2 !text-[11px]">Order {order.reference}</p>
 
       <div className="mt-6 w-full rounded-2xl bg-ink-3/60 p-5 text-left">
         <div className="flex items-center gap-4 border-b border-line/70 pb-4">
@@ -134,7 +134,7 @@ function Confirmation({ order, onTickets, onClose }: { order: Order; onTickets: 
           </div>
         </dl>
         <div className="flex items-center justify-between border-t border-line/70 pt-4">
-          <span className="overline text-mute">Total paid</span>
+          <span className="eyebrow text-mute">Total paid</span>
           <span className="display text-[24px]">{formatPrice(order.totalPrice)}</span>
         </div>
       </div>
@@ -486,7 +486,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
               )}
 
               <div className="mt-auto flex items-center justify-between pt-6">
-                <span className="overline text-mute">Subtotal</span>
+                <span className="eyebrow text-mute">Subtotal</span>
                 <span className="display text-[28px] text-screen">
                   {formatPrice(step === 'checkout' && hold ? hold.subtotal : subtotal)}
                 </span>

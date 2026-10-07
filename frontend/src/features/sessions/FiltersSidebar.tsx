@@ -9,7 +9,7 @@ type Filters = ReturnType<typeof useSessionFilters>
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
     <fieldset className="border-t border-line/70 pt-5">
-      <legend className="overline mb-3 text-mute">{title}</legend>
+      <legend className="eyebrow mb-3 text-mute">{title}</legend>
       <div className="space-y-1">{children}</div>
     </fieldset>
   )
@@ -124,7 +124,7 @@ export function FiltersSidebar({
               ))}
             </Group>
             <fieldset className="border-t border-line/70 pt-5">
-              <legend className="overline mb-3 text-mute">Date</legend>
+              <legend className="eyebrow mb-3 text-mute">Date</legend>
               <DatePicker value={query.date} onChange={setDate} compact />
             </fieldset>
             <Group title="Format">
