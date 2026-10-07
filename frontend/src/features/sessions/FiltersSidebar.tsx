@@ -99,7 +99,7 @@ export function FiltersSidebar({
   }
 
   return (
-    <aside className="sticky top-[96px] flex max-h-[calc(100vh-120px)] w-[340px] shrink-0 flex-col rounded-2xl bg-ink-2">
+    <aside className="flex w-full shrink-0 flex-col rounded-2xl bg-ink-2 lg:sticky lg:top-[96px] lg:max-h-[calc(100vh-120px)] lg:w-[340px]">
       <div className="flex items-center justify-between px-6 pb-4 pt-6">
         <h2 className="display text-[18px]">Filters</h2>
         <span className="text-xs text-mute" aria-live="polite">

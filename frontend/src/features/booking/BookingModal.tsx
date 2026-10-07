@@ -316,7 +316,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
       width={step === 'done' ? 'max-w-[680px]' : 'max-w-[1240px]'}
       header={
         session.data && step !== 'done' ? (
-          <div className="flex items-start justify-between gap-6 pr-4">
+          <div className="flex flex-wrap items-start justify-between gap-3 pr-4">
             <SessionHeader session={session.data} />
             {hold && <HoldTimer expiresAt={hold.expiresAt} onExpire={() => expire()} />}
           </div>
@@ -361,7 +361,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
             </div>
           )}
 
-          <div className="flex items-stretch gap-6">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-stretch">
             <div className="min-w-0 flex-1">
               <StepIndicator step={step} />
               <div className="mt-5">
@@ -393,7 +393,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
               </div>
             </div>
 
-            <aside className="flex w-[360px] shrink-0 flex-col" aria-label="Order summary">
+            <aside className="flex w-full shrink-0 flex-col lg:w-[360px]" aria-label="Order summary">
               <h3 className="text-[15px] font-extrabold">
                 {step === 'seats' ? `Your seats · Max ${maxSeats}` : 'Summary'}
               </h3>

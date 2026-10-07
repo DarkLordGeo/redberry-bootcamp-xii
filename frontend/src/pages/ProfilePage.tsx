@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   if (restoring) {
     return (
-      <div className="mx-auto max-w-[1920px] space-y-8 px-16 pt-10">
+      <div className="mx-auto max-w-[1920px] space-y-8 px-4 sm:px-8 xl:px-16 pt-10">
         <Skeleton className="h-16 w-80" />
         <Skeleton className="h-[420px] w-full" />
       </div>
@@ -56,9 +56,9 @@ export default function ProfilePage() {
     }`
 
   return (
-    <div className="mx-auto max-w-[1920px] px-16 pt-10">
+    <div className="mx-auto max-w-[1920px] px-4 sm:px-8 xl:px-16 pt-10">
       <h1 className="display text-[24px]">My Profile</h1>
-      <div role="tablist" aria-label="Profile sections" className="mt-6 flex gap-8 border-b border-line/70">
+      <div role="tablist" aria-label="Profile sections" className="mt-6 flex gap-6 overflow-x-auto border-b border-line/70 sm:gap-8">
         <button role="tab" aria-selected={tab === 'info'} className={tabClass(tab === 'info')} onClick={() => setTab('info')}>
           Personal information
           {!user.profileComplete && <span className="size-2 rounded-full bg-brass" aria-label="incomplete" />}

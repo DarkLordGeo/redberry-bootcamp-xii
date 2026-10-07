@@ -54,11 +54,11 @@ export default function SessionsPage() {
   const sortOptions = options.data?.sorts ?? (Object.keys(SORT_LABELS) as SessionSort[]).map((id) => ({ id, label: SORT_LABELS[id] }))
 
   return (
-    <div className="mx-auto max-w-[1920px] px-16 pt-10">
+    <div className="mx-auto max-w-[1920px] px-4 sm:px-8 xl:px-16 pt-10">
       <h1 className="display text-[24px]">Sessions</h1>
       <p className="mt-2 text-xs text-mute">Showtimes across all venues · {formatLongDate(query.date)}</p>
 
-      <div className="mt-8 flex items-start gap-8">
+      <div className="mt-6 flex flex-col gap-6 lg:mt-8 lg:flex-row lg:items-start lg:gap-8">
         <FiltersSidebar
           options={options.data}
           loading={options.isPending}
@@ -68,7 +68,7 @@ export default function SessionsPage() {
         />
 
         <section className="min-w-0 flex-1" aria-labelledby="results-count">
-          <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <p id="results-count" className="text-[13px] font-semibold" aria-live="polite">
               {sessions.isPending
                 ? 'Finding sessions…'
@@ -134,7 +134,7 @@ export default function SessionsPage() {
                       </div>
                       <div className="min-w-0">
                         {tooYoung && <p className="mt-1 text-sm text-err">{ageGateMessage(movie.ageRating)}</p>}
-                        <div className="mt-4 flex flex-wrap gap-3">
+                        <div className="mt-4 flex flex-wrap gap-3 max-sm:[&>button]:w-full">
                           {list.map((s) => (
                             <SessionButton
                               key={s.id}

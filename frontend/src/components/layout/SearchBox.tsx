@@ -86,7 +86,7 @@ export function SearchBox() {
   }
 
   return (
-    <div ref={boxRef} className="relative w-[380px]">
+    <div ref={boxRef} className="relative w-full md:w-[300px] lg:w-[380px]">
       <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-mute">
         <SearchIcon />
       </span>

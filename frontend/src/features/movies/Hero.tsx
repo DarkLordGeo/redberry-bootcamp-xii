@@ -51,10 +51,10 @@ export function Hero({
     return () => window.clearTimeout(t)
   }, [index, paused, count])
 
-  if (loading) return <Skeleton className="-mt-[72px] h-[720px] w-full rounded-none" />
+  if (loading) return <Skeleton className="-mt-[72px] h-[600px] w-full rounded-none md:h-[720px]" />
   if (error) {
     return (
-      <section className="mx-auto max-w-[1920px] px-16 pt-10">
+      <section className="mx-auto max-w-[1920px] px-4 sm:px-8 xl:px-16 pt-10">
         <ErrorState error={error} onRetry={onRetry} title="Featured films didn’t load" />
       </section>
     )
@@ -66,7 +66,7 @@ export function Hero({
     <section
       aria-roledescription="carousel"
       aria-label="Featured films"
-      className="relative -mt-[72px] h-[720px] overflow-hidden"
+      className="relative -mt-[72px] h-[600px] overflow-hidden md:h-[720px]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -87,12 +87,12 @@ export function Hero({
       <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink to-transparent" />
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/70 to-transparent" />
 
-      <div className="relative mx-auto flex h-full max-w-[1920px] flex-col justify-end px-16 pb-36">
+      <div className="relative mx-auto flex h-full max-w-[1920px] flex-col justify-end px-4 pb-28 sm:px-8 md:pb-36 xl:px-16">
         <div key={current.id} className="max-w-[620px] motion-safe:animate-[fadeUp_700ms_ease-out]">
           <span className="eyebrow inline-block rounded-sm bg-velvet/15 px-2.5 py-1.5 !text-[11px] text-velvet">
             {current.isComingSoon ? 'Coming soon' : 'Now showing'} · {current.genres.map((g) => g.name).slice(0, 2).join(' / ')}
           </span>
-          <h1 className="display mt-4 text-[40px] uppercase [text-wrap:balance]">{current.title}</h1>
+          <h1 className="display mt-4 text-[28px] uppercase md:text-[40px] [text-wrap:balance]">{current.title}</h1>
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <RatingChip rating={current.ageRating} />
             <RuntimeChip minutes={current.runtimeMinutes} />
@@ -113,8 +113,8 @@ export function Hero({
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-12">
-        <div className="mx-auto flex max-w-[1920px] items-center gap-6 px-16">
+      <div className="absolute inset-x-0 bottom-8 md:bottom-12">
+        <div className="mx-auto flex max-w-[1920px] items-center gap-6 px-4 sm:px-8 xl:px-16">
           <div className="flex flex-1 gap-2" role="tablist" aria-label="Choose featured film">
             {featured.map((m, i) => (
               <button

@@ -57,7 +57,7 @@ export function Modal({ open, onClose, title, children, footer, width = 'max-w-[
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/55 px-4 py-10 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/55 px-3 py-6 backdrop-blur-md sm:px-4 sm:py-10"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
@@ -70,7 +70,7 @@ export function Modal({ open, onClose, title, children, footer, width = 'max-w-[
         tabIndex={-1}
         className={`relative my-auto w-full ${width} rounded-[20px] border border-line/60 bg-ink-2 shadow-2xl shadow-black/50 outline-none`}
       >
-        <div className="flex items-start justify-between gap-4 px-7 pb-2 pt-6">
+        <div className="flex items-start justify-between gap-4 px-5 pb-2 pt-5 sm:px-7 sm:pt-6">
           <div className="min-w-0 flex-1">
             <h2 className="text-[20px] font-bold">{title}</h2>
             {subtitle && <p className="mt-1 text-[13px] text-mute">{subtitle}</p>}
@@ -88,8 +88,8 @@ export function Modal({ open, onClose, title, children, footer, width = 'max-w-[
             </svg>
           </button>
         </div>
-        <div className="px-7 pb-7 pt-4">{children}</div>
-        {footer && <div className="px-7 pb-6">{footer}</div>}
+        <div className="px-5 pb-6 pt-4 sm:px-7 sm:pb-7">{children}</div>
+        {footer && <div className="px-5 pb-6 sm:px-7">{footer}</div>}
       </div>
     </div>,
     document.body,

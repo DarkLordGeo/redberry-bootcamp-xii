@@ -49,7 +49,7 @@ export function SeatMap({
   disabled?: boolean
 }) {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center overflow-x-auto pb-2">
       <div className="mb-8 w-full max-w-[560px] rounded-md bg-ink-3 py-1.5 text-center" aria-hidden>
         <span className="eyebrow !text-[10px] text-mute">Screen</span>
       </div>

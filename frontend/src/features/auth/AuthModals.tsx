@@ -197,7 +197,7 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
       />
       <TextField id="register-username" label="Username" autoComplete="username" required {...fieldState(form, 'username')} {...form.register('username')} />
       <TextField id="register-email" label="Email" type="email" autoComplete="email" required {...fieldState(form, 'email')} {...form.register('email')} />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <TextField
         id="register-password"
         label="Password"

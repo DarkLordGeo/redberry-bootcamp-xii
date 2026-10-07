@@ -32,7 +32,7 @@ function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) =
   const s = order.session
   const refunded = order.status === 'refunded'
   return (
-    <article className="flex gap-6 rounded-2xl bg-ink-2 p-5">
+    <article className="flex flex-col gap-5 rounded-2xl bg-ink-2 p-4 sm:p-5 md:flex-row md:gap-6">
       <Link to={`/movies/${s.movie.slug}`} tabIndex={-1} aria-hidden className="shrink-0">
         <Poster movie={s.movie} className="h-[132px] w-[88px] rounded-lg" />
       </Link>
@@ -47,7 +47,7 @@ function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) =
           <span className="text-xs text-mute">{formatRuntime(s.movie.runtimeMinutes)}</span>
           {refunded && <span className="rounded-md bg-err/15 px-2 py-0.5 text-[11px] font-semibold text-err">Refunded</span>}
         </div>
-        <div className="mt-3 flex gap-12">
+        <div className="mt-3 flex flex-wrap gap-x-12 gap-y-3">
           <Info label="Date">
             {formatLongDate(s.date)} · {s.time}
           </Info>
@@ -67,7 +67,7 @@ function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) =
           ))}
         </div>
       </div>
-      <div className="flex w-[240px] shrink-0 flex-col">
+      <div className="flex w-full shrink-0 flex-col border-t border-line/70 pt-4 md:w-[240px] md:border-0 md:pt-0">
         <p className="eyebrow !text-[10px] text-mute">Order</p>
         <p className="mt-1 text-[13px] font-bold">#{order.reference}</p>
         <div className="mt-auto flex items-end justify-between pb-3">

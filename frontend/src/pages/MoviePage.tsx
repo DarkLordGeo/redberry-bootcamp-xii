@@ -42,7 +42,7 @@ function Sessions({ movie }: { movie: MovieDetail }) {
         Sessions
       </h2>
       <p className="mt-2 text-xs text-mute">{formatLongDate(date)}</p>
-      <div className="mt-4 w-[560px]">
+      <div className="mt-4 w-full max-w-[560px]">
         <DatePicker value={date} onChange={setDate} available={movie.availableDates} />
       </div>
 
@@ -116,7 +116,7 @@ export default function MoviePage() {
 
   if (movie.isPending) {
     return (
-      <div className="mx-auto max-w-[1920px] px-16 pt-10" aria-busy="true">
+      <div className="mx-auto max-w-[1920px] px-4 sm:px-8 xl:px-16 pt-10" aria-busy="true">
         <Skeleton className="-mt-[72px] h-[560px] w-full rounded-none" />
         <div className="mt-10 flex gap-10">
           <Skeleton className="h-6 w-1/2" />
@@ -127,7 +127,7 @@ export default function MoviePage() {
   if (movie.isError) {
     if (movie.error instanceof ApiError && movie.error.status === 404) return <NotFoundPage />
     return (
-      <div className="mx-auto max-w-[1920px] px-16 pt-10">
+      <div className="mx-auto max-w-[1920px] px-4 sm:px-8 xl:px-16 pt-10">
         <ErrorState error={movie.error} onRetry={() => movie.refetch()} title="This film didn’t load" />
       </div>
     )
@@ -141,13 +141,13 @@ export default function MoviePage() {
         {m.backdropUrl && <img src={m.backdropUrl} alt="" className="absolute inset-0 size-full object-cover" />}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(7_12_28/0.9)_0%,rgb(7_12_28/0.55)_50%,rgb(7_12_28/0.25)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
-        <div className="relative mx-auto flex max-w-[1920px] items-end gap-12 px-16 pb-16 pt-[136px]">
-          <Poster movie={m} className="aspect-[2/3] w-[280px] shrink-0 rounded-2xl shadow-2xl shadow-black/60" />
+        <div className="relative mx-auto flex max-w-[1920px] flex-col gap-6 px-4 pb-10 pt-[120px] sm:px-8 md:flex-row md:items-end md:gap-12 md:pb-16 md:pt-[136px] xl:px-16">
+          <Poster movie={m} className="aspect-[2/3] w-[160px] shrink-0 rounded-2xl md:w-[220px] lg:w-[280px] shadow-2xl shadow-black/60" />
           <div className="min-w-0 max-w-[760px] pb-2">
             <span className="eyebrow text-velvet">
               {m.isComingSoon ? `Coming soon · ${formatReleaseDate(m.releaseDate)}` : m.genres.map((g) => g.name).join(' / ')}
             </span>
-            <h1 className="display mt-3 text-[40px] uppercase [text-wrap:balance]">{m.title}</h1>
+            <h1 className="display mt-3 text-[28px] uppercase md:text-[40px] [text-wrap:balance]">{m.title}</h1>
             <p className="mt-4 max-w-[68ch] leading-[1.3] text-screen/90">{m.synopsis}</p>
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <RatingChip rating={m.ageRating} />
@@ -160,10 +160,10 @@ export default function MoviePage() {
         </div>
       </div>
 
-      <div className="mx-auto mt-10 grid max-w-[1920px] grid-cols-[1fr_400px] gap-16 px-16">
+      <div className="mx-auto mt-10 grid max-w-[1920px] grid-cols-1 gap-10 px-4 sm:px-8 lg:grid-cols-[1fr_360px] lg:gap-16 xl:grid-cols-[1fr_400px] xl:px-16">
         <div className="min-w-0">
           {m.isComingSoon ? (
-            <section className="flex items-center justify-between rounded-2xl bg-ink-2 px-8 py-7">
+            <section className="flex flex-col gap-4 rounded-2xl bg-ink-2 px-6 py-6 sm:flex-row sm:items-center sm:justify-between md:px-8 md:py-7">
               <div>
                 <h2 className="display text-[20px]">Opens {formatReleaseDate(m.releaseDate)}</h2>
                 <p className="mt-2 text-mute">Sessions aren’t on sale yet. Get a heads-up when they are.</p>

@@ -17,7 +17,7 @@ function Row({ children, label }: { children: ReactNode; label: string }) {
       <div ref={ref} className="relative flex snap-x gap-6 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:thin]" aria-label={label}>
         {children}
       </div>
-      <div className="pointer-events-none absolute -top-14 right-0 flex gap-2">
+      <div className="pointer-events-none absolute -top-14 right-0 hidden gap-2 md:flex">
         {([-1, 1] as const).map((d) => (
           <button
             key={d}
@@ -37,8 +37,8 @@ function Row({ children, label }: { children: ReactNode; label: string }) {
 
 function Section({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
-    <section className="mx-auto mt-14 max-w-[1920px] px-16">
-      <div className="mb-5 flex items-center justify-between gap-6 pr-28">
+    <section className="mx-auto mt-10 md:mt-14 max-w-[1920px] px-4 sm:px-8 xl:px-16">
+      <div className="mb-5 flex items-center justify-between gap-6 md:pr-28">
         <h2 className={`display text-[20px] ${title === 'Recently viewed' ? '' : 'uppercase'}`}>{title}</h2>
         {action}
       </div>
@@ -64,7 +64,7 @@ export default function HomePage() {
               <Link
                 key={m.id}
                 to={`/movies/${m.slug}`}
-                className="flex w-[330px] shrink-0 snap-start items-center gap-4 rounded-xl bg-ink-2 p-3 transition-colors hover:bg-ink-3"
+                className="flex w-[280px] shrink-0 snap-start sm:w-[330px] items-center gap-4 rounded-xl bg-ink-2 p-3 transition-colors hover:bg-ink-3"
               >
                 <Poster movie={m} className="h-[66px] w-[66px] shrink-0 rounded-lg" />
                 <div className="min-w-0">

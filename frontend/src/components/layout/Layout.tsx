@@ -11,7 +11,7 @@ export function Layout() {
         <Outlet />
       </main>
       <footer className="mt-24 border-t border-line/60">
-        <div className="mx-auto flex max-w-[1920px] items-center justify-between px-16 py-8 text-xs text-mute">
+        <div className="mx-auto flex max-w-[1920px] flex-col items-center justify-between gap-3 px-4 py-8 text-xs text-mute sm:flex-row sm:px-8 xl:px-16">
           <Logo className="text-[16px] text-screen" />
           <p>© {new Date().getFullYear()} Kino XII. All rights reserved.</p>
         </div>

@@ -89,9 +89,9 @@ export function CheckoutForm({
       className="flex flex-col gap-5"
     >
       <FormError message={formError} />
-      <fieldset className="grid grid-cols-2 gap-4">
+      <fieldset className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <legend className="eyebrow mb-3 !text-[11px] text-mute">Your details</legend>
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <TextField id="co-name" label="Full Name" autoComplete="name" required {...fieldState(form, 'fullName')} {...form.register('fullName')} />
         </div>
         <TextField id="co-email" label="Email" type="email" autoComplete="email" required {...fieldState(form, 'email')} {...form.register('email')} />
@@ -157,7 +157,7 @@ export function CheckoutForm({
         </div>
       </fieldset>
 
-      <div className="mt-2 flex items-center justify-between gap-4">
+      <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <Button variant="secondary" onClick={onBack} disabled={pay.isPending}>
           Back to seats
         </Button>

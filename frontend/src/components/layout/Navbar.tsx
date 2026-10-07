@@ -125,7 +125,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/5 bg-ink/85 backdrop-blur-md">
-      <div className="mx-auto flex h-[72px] max-w-[1920px] items-center gap-10 px-16">
+      <div className="mx-auto flex max-w-[1920px] flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-8 md:h-[72px] md:flex-nowrap md:gap-10 md:py-0 xl:px-16">
         <Logo />
         <nav aria-label="Main">
           <NavLink
@@ -135,8 +135,10 @@ export function Navbar() {
             Sessions
           </NavLink>
         </nav>
-        <div className="ml-auto flex items-center gap-4">
+        <div className="order-last w-full md:order-none md:ml-auto md:w-auto">
           <SearchBox />
+        </div>
+        <div className="ml-auto flex items-center gap-4 md:ml-0">
           {restoring ? (
             <div className="skeleton h-10 w-40 rounded-full" />
           ) : user ? (

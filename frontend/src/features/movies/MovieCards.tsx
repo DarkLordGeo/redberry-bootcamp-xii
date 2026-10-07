@@ -25,7 +25,7 @@ export function Poster({ movie, className = '' }: { movie: Pick<Movie, 'posterUr
 export function NowPlayingCard({ movie }: { movie: Movie }) {
   const navigate = useNavigate()
   return (
-    <article className="group flex w-[264px] shrink-0 flex-col rounded-2xl bg-ink-2 p-3 transition-colors hover:bg-ink-3">
+    <article className="group flex w-[200px] shrink-0 sm:w-[264px] flex-col rounded-2xl bg-ink-2 p-3 transition-colors hover:bg-ink-3">
       <Link to={`/movies/${movie.slug}`} className="block" tabIndex={-1} aria-hidden>
         <Poster movie={movie} className="aspect-[2/3] w-full rounded-xl" />
       </Link>
@@ -84,7 +84,7 @@ export function NotifyButton({ movie, className = "", size = "md" }: { movie: Mo
 /** Coming Soon: no sessions, so the card leads to details and a Notify Me action — never to seat selection. */
 export function ComingSoonCard({ movie }: { movie: Movie }) {
   return (
-    <article className="flex w-[232px] shrink-0 flex-col rounded-2xl bg-ink-2 p-3">
+    <article className="flex w-[180px] shrink-0 sm:w-[232px] flex-col rounded-2xl bg-ink-2 p-3">
       <Link to={`/movies/${movie.slug}`} className="relative block">
         <Poster movie={movie} className="aspect-[2/3] w-full rounded-xl" />
         <span className="absolute left-2 top-2 rounded-md bg-ink/85 px-2 py-1 text-[11px] font-semibold text-brass">
