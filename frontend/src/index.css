@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Design tokens from the Figma file go here */
+@theme {
+  --font-sans: "FiraGO", system-ui, sans-serif;
+}
