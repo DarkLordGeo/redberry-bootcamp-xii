@@ -14,7 +14,7 @@ function Row({ children, label }: { children: ReactNode; label: string }) {
   const scroll = (dir: 1 | -1) => ref.current?.scrollBy({ left: dir * ref.current.clientWidth * 0.8, behavior: 'smooth' })
   return (
     <div className="relative">
-      <div ref={ref} className="flex snap-x gap-6 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:thin]" aria-label={label}>
+      <div ref={ref} className="relative flex snap-x gap-6 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:thin]" aria-label={label}>
         {children}
       </div>
       <div className="pointer-events-none absolute -top-14 right-0 flex gap-2">

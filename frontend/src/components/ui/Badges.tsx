@@ -12,7 +12,7 @@ export function AgeBadge({ rating, withTooltip = true }: { rating: AgeRating; wi
   return (
     <span
       title={withTooltip ? rating.description : undefined}
-      className={`inline-flex h-6 min-w-9 items-center justify-center rounded-sm border px-1.5 text-xs font-bold ${ratingTone[rating.code] ?? 'border-line text-mute'}`}
+      className={`relative inline-flex h-6 min-w-9 items-center justify-center rounded-sm border px-1.5 text-xs font-bold ${ratingTone[rating.code] ?? 'border-line text-mute'}`}
     >
       <span className="sr-only">Rated </span>
       {rating.code}
