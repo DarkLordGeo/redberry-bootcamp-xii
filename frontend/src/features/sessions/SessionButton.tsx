@@ -36,11 +36,11 @@ export function SessionButton({
       title={blockedReason}
       onClick={() => startBooking(session, ageRating)}
       aria-label={`${session.time}, ${session.venue.name} hall ${session.hall.name}, ${session.format.name}, ${session.language.name}, from ${formatPrice(session.price)}, ${status}`}
-      className="group flex w-[220px] flex-col gap-2.5 rounded-md border border-line bg-ink-2 p-3.5 text-left transition-colors enabled:hover:border-brass disabled:cursor-not-allowed disabled:opacity-45"
+      className="group flex w-[220px] flex-col gap-2.5 rounded-md border border-line bg-ink-2 p-3.5 text-left transition-colors enabled:hover:border-velvet disabled:cursor-not-allowed disabled:opacity-45"
     >
       <div className="flex items-baseline justify-between gap-2">
-        <span className={`display text-[30px] ${session.isSoldOut ? 'line-through decoration-2' : ''}`}>{session.time}</span>
-        <span className="text-sm font-semibold text-brass">from {formatPrice(session.price)}</span>
+        <span className={`display text-[22px] ${session.isSoldOut ? 'line-through decoration-2' : ''}`}>{session.time}</span>
+        <span className="text-sm font-semibold text-screen">from {formatPrice(session.price)}</span>
       </div>
       {showVenue && (
         <p className="truncate text-[13px] text-mute">

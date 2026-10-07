@@ -72,7 +72,7 @@ export function ProfileForm({ user }: { user: User }) {
     <section aria-labelledby="personal-heading" className="rounded-lg border border-line bg-ink-2 p-8">
       <div className="flex items-start justify-between gap-6">
         <div>
-          <h2 id="personal-heading" className="display text-[36px]">
+          <h2 id="personal-heading" className="display text-[24px]">
             Personal Information
           </h2>
           <p className="mt-1 text-mute">Booking needs your name, mobile number and date of birth.</p>

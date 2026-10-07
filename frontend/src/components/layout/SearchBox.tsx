@@ -1,9 +1,9 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { searchMovies } from '@/api/endpoints'
-import { AgeBadge } from '@/components/ui/Badges'
-import { formatRuntime } from '@/lib/format'
+import { buttonClass } from '@/components/ui/Button'
+import { formatPrice, formatRuntime } from '@/lib/format'
 
 function useDebounced<T>(value: T, ms: number) {
   const [v, setV] = useState(value)
@@ -12,6 +12,39 @@ function useDebounced<T>(value: T, ms: number) {
     return () => clearTimeout(t)
   }, [value, ms])
   return v
+}
+
+/** Bolds the part of the title that matches the query, as in the design. */
+function Highlight({ text, query }: { text: string; query: string }) {
+  const i = text.toLowerCase().indexOf(query.toLowerCase())
+  if (i < 0 || !query) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, i)}
+      <strong className="font-extrabold">{text.slice(i, i + query.length)}</strong>
+      {text.slice(i + query.length)}
+    </>
+  )
+}
+
+const SearchIcon = ({ className = 'size-4' }: { className?: string }) => (
+  <svg aria-hidden viewBox="0 0 20 20" className={className} fill="none" stroke="currentColor" strokeWidth="1.8">
+    <circle cx="9" cy="9" r="5.5" />
+    <path d="M13.5 13.5L17 17" strokeLinecap="round" />
+  </svg>
+)
+
+function Prompt({ icon, title, body, onBrowse }: { icon: ReactNode; title: string; body: string; onBrowse: () => void }) {
+  return (
+    <div className="flex flex-col items-center px-6 py-8 text-center">
+      <span className="grid size-10 place-items-center rounded-full bg-ink-3">{icon}</span>
+      <p className="mt-4 font-bold">{title}</p>
+      <p className="mt-1 text-[13px] text-mute">{body}</p>
+      <button type="button" onClick={onBrowse} className={`${buttonClass('secondary', 'sm')} mt-5`}>
+        Browse all sessions
+      </button>
+    </div>
+  )
 }
 
 export function SearchBox() {
@@ -39,25 +72,31 @@ export function SearchBox() {
   }, [])
 
   const items = results.data ?? []
-  const go = (slug: string) => {
+  const close = () => {
     setOpen(false)
     setQ('')
+  }
+  const go = (slug: string) => {
+    close()
     navigate(`/movies/${slug}`)
+  }
+  const browse = () => {
+    close()
+    navigate('/sessions')
   }
 
   return (
-    <div ref={boxRef} className="relative w-[300px]">
-      <svg aria-hidden viewBox="0 0 20 20" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-mute" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <circle cx="9" cy="9" r="5.5" />
-        <path d="M13.5 13.5L17 17" strokeLinecap="round" />
-      </svg>
+    <div ref={boxRef} className="relative w-[380px]">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-mute">
+        <SearchIcon />
+      </span>
       <input
         type="search"
         role="combobox"
-        aria-expanded={open && debounced.length > 0}
+        aria-expanded={open}
         aria-controls={listId}
-        aria-label="Search films"
-        placeholder="Search films"
+        aria-label="Search films and live events"
+        placeholder="Search films and live events"
         value={q}
         onChange={(e) => {
           setQ(e.target.value)
@@ -71,38 +110,87 @@ export function SearchBox() {
           else if (e.key === 'Enter' && items[active]) go(items[active].slug)
           else if (e.key === 'Escape') setOpen(false)
         }}
-        className="h-10 w-full rounded-md border border-line bg-ink-2 pl-9 pr-3 text-sm outline-none placeholder:text-mute focus:border-brass"
+        className="h-10 w-full rounded-full bg-ink-3 pl-10 pr-4 text-sm outline-none placeholder:text-mute focus:ring-1 focus:ring-velvet [&::-webkit-search-cancel-button]:hidden"
       />
-      {open && debounced.length > 0 && (
-        <div id={listId} role="listbox" className="absolute left-0 right-0 top-12 z-40 overflow-hidden rounded-md border border-line bg-ink-2 shadow-2xl shadow-black/50">
-          {results.isPending ? (
-            <p className="px-4 py-3 text-sm text-mute">Searching…</p>
+      {open && (
+        <div
+          id={listId}
+          role="listbox"
+          className="absolute left-0 right-0 top-12 z-40 overflow-hidden rounded-2xl border border-line/60 bg-ink shadow-2xl shadow-black/60"
+        >
+          {!debounced ? (
+            <Prompt
+              icon={
+                <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+                  <path d="M5 9h14l-1.6 11H6.6L5 9z" strokeLinejoin="round" />
+                  <path d="M7 9a2.5 2.5 0 014-2 2.5 2.5 0 014 0 2.5 2.5 0 014 2M10 12v5M14 12v5" strokeLinecap="round" />
+                </svg>
+              }
+              title="What do you want to watch?"
+              body="Search by title, director or cast"
+              onBrowse={browse}
+            />
+          ) : results.isPending ? (
+            <div className="space-y-3 p-4" aria-busy="true">
+              {Array.from({ length: 3 }, (_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="skeleton h-12 w-9" />
+                  <div className="skeleton h-4 flex-1" />
+                </div>
+              ))}
+            </div>
           ) : results.isError ? (
-            <p className="px-4 py-3 text-sm text-err">Search failed. Try again.</p>
-          ) : items.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-mute">No films match “{debounced}”.</p>
-          ) : (
-            items.map((m, i) => (
-              <button
-                key={m.id}
-                role="option"
-                aria-selected={i === active}
-                onMouseEnter={() => setActive(i)}
-                onClick={() => go(m.slug)}
-                className={`flex w-full items-center gap-3 px-3 py-2 text-left ${i === active ? 'bg-ink-3' : ''}`}
-              >
-                <div className="h-12 w-8 shrink-0 overflow-hidden rounded-sm bg-ink-3">
-                  {m.posterUrl && <img src={m.posterUrl} alt="" className="size-full object-cover" />}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{m.title}</p>
-                  <p className="text-xs text-mute">
-                    {m.isComingSoon ? 'Coming soon' : formatRuntime(m.runtimeMinutes)}
-                  </p>
-                </div>
-                <AgeBadge rating={m.ageRating} withTooltip={false} />
+            <div className="flex flex-col items-center gap-3 px-6 py-8 text-center">
+              <p className="font-bold">Search didn’t load</p>
+              <button type="button" onClick={() => results.refetch()} className={buttonClass('secondary', 'sm')}>
+                Try again
               </button>
-            ))
+            </div>
+          ) : items.length === 0 ? (
+            <Prompt
+              icon={<SearchIcon className="size-5" />}
+              title={`No results for “${debounced}”`}
+              body="Check the spelling or try another film or live event."
+              onBrowse={browse}
+            />
+          ) : (
+            <>
+              <div className="flex items-center justify-between px-4 pb-2 pt-4">
+                <span className="overline text-mute">Films &amp; events</span>
+                <span className="text-xs text-mute">
+                  {items.length} {items.length === 1 ? 'result' : 'results'}
+                </span>
+              </div>
+              <div className="pb-2">
+                {items.map((m, i) => (
+                  <button
+                    key={m.id}
+                    role="option"
+                    aria-selected={i === active}
+                    onMouseEnter={() => setActive(i)}
+                    onClick={() => go(m.slug)}
+                    className={`flex w-full items-center gap-3 px-4 py-2 text-left ${i === active ? 'bg-ink-2' : ''}`}
+                  >
+                    <div className="h-12 w-9 shrink-0 overflow-hidden rounded-sm bg-ink-3">
+                      {m.posterUrl && <img src={m.posterUrl} alt="" className="size-full object-cover" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm">
+                        <Highlight text={m.title} query={debounced} />
+                      </p>
+                      <p className="mt-0.5 text-xs text-mute">
+                        {m.kind === 'event' ? 'Event' : 'Film'} · {m.ageRating.code} · {formatRuntime(m.runtimeMinutes)}
+                      </p>
+                    </div>
+                    {m.isComingSoon ? (
+                      <span className="text-xs font-semibold text-brass">Coming Soon</span>
+                    ) : (
+                      <span className="text-xs font-bold">from {formatPrice(m.fromPrice)}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}

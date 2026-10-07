@@ -54,8 +54,8 @@ export default function SessionsPage() {
   const sortOptions = options.data?.sorts ?? (Object.keys(SORT_LABELS) as SessionSort[]).map((id) => ({ id, label: SORT_LABELS[id] }))
 
   return (
-    <div className="mx-auto max-w-[1600px] px-10 pt-10">
-      <h1 className="display text-[64px]">Sessions</h1>
+    <div className="mx-auto max-w-[1920px] px-16 pt-10">
+      <h1 className="display text-[24px]">Sessions</h1>
       <p className="mt-2 text-mute">{formatLongDate(query.date)}</p>
 
       <div className="mt-8 flex items-start gap-8">
@@ -81,7 +81,7 @@ export default function SessionsPage() {
               <select
                 value={query.sort}
                 onChange={(e) => setSort(e.target.value as SessionSort)}
-                className="h-10 rounded-md border border-line bg-ink-2 px-3 text-sm outline-none focus:border-brass"
+                className="h-10 rounded-md border border-line bg-ink-2 px-3 text-sm outline-none focus:border-velvet"
               >
                 {sortOptions.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -122,7 +122,7 @@ export default function SessionsPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-3">
                           <h2 className="text-xl font-semibold">
-                            <Link to={`/movies/${movie.slug}`} className="hover:text-brass">
+                            <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
                               {movie.title}
                             </Link>
                           </h2>

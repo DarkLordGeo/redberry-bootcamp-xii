@@ -85,7 +85,7 @@ function LoginForm({ onDone }: { onDone: () => void }) {
       </Button>
       <p className="text-center text-sm text-mute">
         Don’t have an account?{' '}
-        <button type="button" className="font-semibold text-brass hover:underline" onClick={() => switchAuth('register')}>
+        <button type="button" className="font-semibold text-velvet hover:underline" onClick={() => switchAuth('register')}>
           Sign Up
         </button>
       </p>
@@ -217,7 +217,7 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
       </Button>
       <p className="text-center text-sm text-mute">
         Already have an account?{' '}
-        <button type="button" className="font-semibold text-brass hover:underline" onClick={() => switchAuth('login')}>
+        <button type="button" className="font-semibold text-velvet hover:underline" onClick={() => switchAuth('login')}>
           Log In
         </button>
       </p>

@@ -3,7 +3,7 @@ import type { Seat, SeatMap as SeatMapData } from '@/api/types'
 export type SeatView = 'available' | 'selected' | 'sold' | 'held' | 'unavailable'
 
 const seatClass: Record<SeatView, string> = {
-  available: 'border-mute/70 bg-transparent text-mute hover:border-brass hover:text-screen',
+  available: 'border-mute/70 bg-transparent text-mute hover:border-velvet hover:text-screen',
   selected: 'border-velvet bg-velvet text-screen',
   sold: 'border-transparent bg-ink-3 text-transparent',
   held: 'border-brass/40 bg-[repeating-linear-gradient(135deg,color-mix(in_oklab,var(--color-brass)_35%,transparent)_0_3px,transparent_3px_7px)] text-transparent',

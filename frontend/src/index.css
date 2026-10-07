@@ -5,19 +5,21 @@
  * Figma file is a matter of changing these values, not the components.
  */
 @theme {
+  /* Tokens copied from the Redberry Figma file variables (Kino XII). */
   --font-sans: "Archivo", system-ui, sans-serif;
 
-  --color-ink: #15111b;        /* page background — a dark auditorium */
-  --color-ink-2: #1d1725;      /* raised surfaces: panels, cards, modals */
-  --color-ink-3: #2b2335;      /* inputs, chips, dividers */
-  --color-line: #3a3045;       /* borders */
-  --color-screen: #f3eee4;     /* primary text — the projector-screen white */
-  --color-mute: #a097ab;       /* secondary text */
-  --color-velvet: #c23a4e;     /* primary actions, selected seats */
-  --color-velvet-hi: #d8505f;
-  --color-brass: #e8b44c;      /* prices, timers, focus, marquee accents */
-  --color-ok: #4fb286;
-  --color-err: #ef6a5e;
+  --color-ink: #070c1c;        /* bg/page */
+  --color-ink-2: #1e2031;      /* bg/card: panels, cards, modals */
+  --color-ink-3: #2a2c3d;      /* bg/raised: inputs, chips, secondary buttons */
+  --color-line: #33364a;       /* borders, dividers */
+  --color-screen: #ffffff;     /* text/primary */
+  --color-mute: #a9a9a9;       /* text/secondary */
+  --color-dim: #505261;        /* text/disabled */
+  --color-velvet: #ec3013;     /* color/red: primary actions, selected state */
+  --color-velvet-hi: #f24a2e;
+  --color-brass: #e27e04;      /* color/orange (Tint/Warning) */
+  --color-ok: #34c37a;
+  --color-err: #ef4b3c;
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -39,6 +41,8 @@
     background: var(--color-ink);
     color: var(--color-screen);
     font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.3;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
   }
@@ -55,12 +59,18 @@
 }
 
 @layer components {
-  /* Condensed Archivo for titles: reads like a marquee board. */
+  /* Heavy grotesk for titles, as in the design ("THE ODYSSEY", "NOW PLAYING"). */
+  /* Display / H1–H3 in the design: Archivo ExtraBold, line-height 100%. */
   .display {
-    font-stretch: 72%;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 0.95;
+    font-weight: 800;
+    line-height: 1;
+  }
+  /* Overline: SemiBold 12, letter-spacing 6%. */
+  .overline {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .skeleton {
     background: linear-gradient(90deg, var(--color-ink-2) 0, var(--color-ink-3) 200px, var(--color-ink-2) 400px);

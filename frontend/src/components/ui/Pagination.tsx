@@ -34,7 +34,7 @@ export function Pagination({ page, lastPage, onChange }: { page: number; lastPag
               key={p}
               onClick={() => onChange(p)}
               aria-current={p === page ? 'page' : undefined}
-              className={`h-10 min-w-10 rounded-md px-2 text-sm font-semibold ${p === page ? 'bg-brass text-ink' : 'border border-line hover:border-mute'}`}
+              className={`h-10 min-w-10 rounded-md px-2 text-sm font-semibold ${p === page ? 'bg-velvet text-screen' : 'border border-line hover:border-mute'}`}
             >
               {p}
             </button>

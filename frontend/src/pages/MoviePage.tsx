@@ -40,7 +40,7 @@ function Sessions({ movie }: { movie: MovieDetail }) {
     <section className="mt-16" aria-labelledby="sessions-heading">
       <div className="flex items-end justify-between gap-8">
         <div>
-          <h2 id="sessions-heading" className="display text-[44px]">
+          <h2 id="sessions-heading" className="display text-[28px]">
             Sessions
           </h2>
           <p className="mt-1 text-mute">{formatLongDate(date)}</p>
@@ -108,7 +108,7 @@ export default function MoviePage() {
 
   if (movie.isPending) {
     return (
-      <div className="mx-auto max-w-[1600px] px-10 pt-10" aria-busy="true">
+      <div className="mx-auto max-w-[1920px] px-16 pt-10" aria-busy="true">
         <Skeleton className="h-[440px] w-full rounded-lg" />
         <div className="mt-10 flex gap-10">
           <Skeleton className="h-6 w-1/2" />
@@ -119,7 +119,7 @@ export default function MoviePage() {
   if (movie.isError) {
     if (movie.error instanceof ApiError && movie.error.status === 404) return <NotFoundPage />
     return (
-      <div className="mx-auto max-w-[1600px] px-10 pt-10">
+      <div className="mx-auto max-w-[1920px] px-16 pt-10">
         <ErrorState error={movie.error} onRetry={() => movie.refetch()} title="This film didn’t load" />
       </div>
     )
@@ -133,7 +133,7 @@ export default function MoviePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
       </div>
 
-      <div className="relative mx-auto -mt-64 max-w-[1600px] px-10">
+      <div className="relative mx-auto -mt-64 max-w-[1920px] px-16">
         <div className="flex gap-12">
           <Poster movie={m} className="aspect-[2/3] w-[300px] shrink-0 border border-line shadow-2xl shadow-black/60" />
           <div className="flex min-w-0 flex-1 flex-col pt-24">
@@ -170,7 +170,7 @@ export default function MoviePage() {
         {m.isComingSoon ? (
           <section className="mt-16 flex items-center justify-between rounded-lg border border-line bg-ink-2 px-8 py-7">
             <div>
-              <h2 className="display text-[36px]">Opens {formatReleaseDate(m.releaseDate)}</h2>
+              <h2 className="display text-[24px]">Opens {formatReleaseDate(m.releaseDate)}</h2>
               <p className="mt-1 text-mute">Sessions aren’t on sale yet. Get a heads-up when they are.</p>
             </div>
             <NotifyButton movie={m} />

@@ -31,14 +31,14 @@ export function NowPlayingCard({ movie }: { movie: Movie }) {
       </Link>
       <div className="mt-4 flex flex-1 flex-col gap-2">
         <h3 className="text-lg font-semibold leading-snug">
-          <Link to={`/movies/${movie.slug}`} className="hover:text-brass">
+          <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
             {movie.title}
           </Link>
         </h3>
         <div className="flex items-center gap-3 text-sm text-mute">
           <AgeBadge rating={movie.ageRating} />
           <span>{formatRuntime(movie.runtimeMinutes)}</span>
-          <span className="ml-auto font-semibold text-brass">from {formatPrice(movie.fromPrice)}</span>
+          <span className="ml-auto font-semibold text-screen">from {formatPrice(movie.fromPrice)}</span>
         </div>
         <Button className="mt-2 w-full" onClick={() => navigate(`/movies/${movie.slug}`)}>
           Buy Ticket
@@ -93,7 +93,7 @@ export function ComingSoonCard({ movie }: { movie: Movie }) {
         </span>
       </Link>
       <h3 className="mt-3 font-semibold leading-snug">
-        <Link to={`/movies/${movie.slug}`} className="hover:text-brass">
+        <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
           {movie.title}
         </Link>
       </h3>

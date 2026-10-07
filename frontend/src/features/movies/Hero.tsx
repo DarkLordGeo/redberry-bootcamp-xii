@@ -32,14 +32,14 @@ export function Hero({
 
   if (loading) {
     return (
-      <section className="mx-auto max-w-[1600px] px-10 pt-8">
+      <section className="mx-auto max-w-[1920px] px-16 pt-8">
         <Skeleton className="h-[620px] w-full rounded-lg" />
       </section>
     )
   }
   if (error) {
     return (
-      <section className="mx-auto max-w-[1600px] px-10 pt-8">
+      <section className="mx-auto max-w-[1920px] px-16 pt-8">
         <ErrorState error={error} onRetry={onRetry} title="Featured films didn’t load" />
       </section>
     )
@@ -51,7 +51,7 @@ export function Hero({
     <section
       aria-roledescription="carousel"
       aria-label="Featured films"
-      className="mx-auto max-w-[1600px] px-10 pt-8"
+      className="mx-auto max-w-[1920px] px-16 pt-8"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -79,14 +79,14 @@ export function Hero({
             <span>{formatRuntime(current.runtimeMinutes)}</span>
             <span>{current.genres.map((g) => g.name).join(', ')}</span>
           </div>
-          <h1 className="display text-[96px] text-screen [text-wrap:balance]">{current.title}</h1>
+          <h1 className="display text-[56px] uppercase text-screen [text-wrap:balance]">{current.title}</h1>
           {current.synopsis && <p className="line-clamp-3 max-w-[56ch] text-[17px] leading-relaxed text-screen/85">{current.synopsis}</p>}
           <div className="mt-2 flex items-center gap-4">
             <Link to={`/movies/${current.slug}`} className={buttonClass('primary', 'lg')}>
               Buy Ticket
             </Link>
             <span className="text-mute">
-              from <span className="font-semibold text-brass">{formatPrice(current.fromPrice)}</span>
+              from <span className="font-semibold text-screen">{formatPrice(current.fromPrice)}</span>
             </span>
           </div>
         </div>
@@ -107,7 +107,7 @@ export function Hero({
               {i === index && !paused && featured.length > 1 && (
                 <span
                   key={index}
-                  className="absolute inset-x-0 bottom-0 h-1 origin-left bg-brass motion-safe:animate-[progress_7000ms_linear]"
+                  className="absolute inset-x-0 bottom-0 h-1 origin-left bg-velvet motion-safe:animate-[progress_7000ms_linear]"
                 />
               )}
             </button>

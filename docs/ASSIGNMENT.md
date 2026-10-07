@@ -6,6 +6,14 @@ Source: Redberry bootcamp library (Georgian), translated and condensed.
 - API base URL: `https://api.kinoxii.redberryinternship.ge/api`
 - Seeded test account: `jane@kinoxii.test` / `password` (complete profile, tickets in both tabs)
 
+**App language:** English.
+
+**Navigation (intro page):**
+- Guest: logo · Sessions · Log in · Sign up
+- Signed in: logo · Sessions · initials/avatar icon with a dropdown → My Profile, Logout
+
+**Sessions page also needs a search box** (API `search` param), alongside filters and sort.
+
 **What it is:** a cinema booking web app — home page, sessions list with filters,
 movie details, 2-step booking modal (seats → checkout), profile + my tickets.
 

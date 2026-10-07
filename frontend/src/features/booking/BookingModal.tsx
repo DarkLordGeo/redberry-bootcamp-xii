@@ -58,7 +58,7 @@ function StepIndicator({ step }: { step: Step }) {
             {i > 0 && <span aria-hidden className={`h-px w-10 ${done || active ? 'bg-brass' : 'bg-line'}`} />}
             <span
               className={`grid size-7 place-items-center rounded-full text-sm font-bold ${
-                active ? 'bg-brass text-ink' : done ? 'bg-brass/25 text-brass' : 'bg-ink-3 text-mute'
+                active ? 'bg-velvet text-screen' : done ? 'bg-brass/25 text-brass' : 'bg-ink-3 text-mute'
               }`}
             >
               {done ? '✓' : i + 1}
@@ -117,7 +117,7 @@ function Confirmation({ order, onTickets, onClose }: { order: Order; onTickets: 
       <h3 className="display mt-5 text-[48px]">You’re booked</h3>
       <p className="mt-2 text-mute">A confirmation has been sent to {order.contact.email}.</p>
       <p className="mt-6 text-sm text-mute">Order reference</p>
-      <p className="display text-[40px] text-brass">{order.reference}</p>
+      <p className="display text-[28px] text-velvet">{order.reference}</p>
 
       <div className="mt-8 w-full rounded-lg border border-line bg-ink p-5 text-left">
         <p className="text-lg font-semibold">{s.movie.title}</p>
@@ -431,7 +431,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
                           onChange={(e) =>
                             setSelection((cur) => new Map(cur).set(l.seatId, e.target.value as TicketTypeSlug))
                           }
-                          className={`h-9 rounded-md border bg-ink-3 px-2 text-sm outline-none focus:border-brass ${l.blocked ? 'border-err' : 'border-line'}`}
+                          className={`h-9 rounded-md border bg-ink-3 px-2 text-sm outline-none focus:border-velvet ${l.blocked ? 'border-err' : 'border-line'}`}
                         >
                           {ticketTypes.map((t) => (
                             <option key={t.slug} value={t.slug}>
@@ -465,7 +465,7 @@ function BookingFlow({ sessionId, onClose }: { sessionId: number; onClose: () =>
 
               <div className="mt-4 flex items-center justify-between">
                 <span className="font-semibold">{step === 'checkout' ? 'Total' : 'Subtotal'}</span>
-                <span className="display text-[30px] text-brass">
+                <span className="display text-[28px] text-screen">
                   {formatPrice(step === 'checkout' && hold ? hold.subtotal : subtotal)}
                 </span>
               </div>

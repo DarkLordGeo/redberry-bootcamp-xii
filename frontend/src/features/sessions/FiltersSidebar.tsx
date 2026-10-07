@@ -22,7 +22,7 @@ function Check({ checked, onChange, label, sub }: { checked: boolean; onChange: 
       <span
         aria-hidden
         className={`grid size-5 shrink-0 place-items-center rounded-sm border peer-focus-visible:outline-2 peer-focus-visible:outline-brass ${
-          checked ? 'border-brass bg-brass text-ink' : 'border-line'
+          checked ? 'border-velvet bg-velvet text-screen' : 'border-line'
         }`}
       >
         {checked && (
@@ -74,7 +74,7 @@ export function FiltersSidebar({
   return (
     <aside className="sticky top-[96px] flex max-h-[calc(100vh-120px)] w-[340px] shrink-0 flex-col rounded-lg border border-line bg-ink-2">
       <div className="flex items-center justify-between px-5 pb-3 pt-5">
-        <h2 className="display text-[28px]">Filters</h2>
+        <h2 className="display text-[20px]">Filters</h2>
         <span className="text-sm text-mute" aria-live="polite">
           {activeCount} {activeCount === 1 ? 'filter' : 'filters'} active
         </span>
@@ -109,7 +109,7 @@ export function FiltersSidebar({
                       type="button"
                       aria-pressed={on}
                       onClick={() => toggle('formats', f.slug)}
-                      className={`h-9 rounded-md border px-3 text-sm font-semibold ${on ? 'border-brass bg-brass text-ink' : 'border-line hover:border-mute'}`}
+                      className={`h-9 rounded-md border px-3 text-sm font-semibold ${on ? 'border-velvet bg-velvet text-screen' : 'border-line hover:border-mute'}`}
                     >
                       {f.name}
                     </button>

@@ -40,7 +40,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 px-6 py-32 text-center">
-        <h1 className="display text-[48px]">Log in to see your profile</h1>
+        <h1 className="display text-[32px]">Log in to see your profile</h1>
         <p className="text-mute">Your details and tickets live here.</p>
         <Button onClick={() => requestAuth('login')}>Log In</Button>
       </div>
@@ -58,7 +58,7 @@ export default function ProfilePage() {
           </span>
         )}
         <div>
-          <h1 className="display text-[56px]">{user.fullName ?? user.username}</h1>
+          <h1 className="display text-[32px]">{user.fullName ?? user.username}</h1>
           <p className="text-mute">@{user.username}</p>
         </div>
       </div>

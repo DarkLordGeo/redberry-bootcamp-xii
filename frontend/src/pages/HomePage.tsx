@@ -37,9 +37,9 @@ function Row({ children, label }: { children: ReactNode; label: string }) {
 
 function Section({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
-    <section className="mx-auto mt-20 max-w-[1600px] px-10">
+    <section className="mx-auto mt-20 max-w-[1920px] px-16">
       <div className="mb-6 flex items-end gap-6 pr-28">
-        <h2 className="display text-[44px]">{title}</h2>
+        <h2 className="display text-[28px] uppercase">{title}</h2>
         {action}
       </div>
       {children}
@@ -63,7 +63,7 @@ export default function HomePage() {
             {recent.map((m) => (
               <Link key={m.id} to={`/movies/${m.slug}`} className="group w-[160px] shrink-0 snap-start">
                 <Poster movie={m} className="aspect-[2/3] w-full transition-transform group-hover:-translate-y-1" />
-                <p className="mt-2 truncate text-sm font-semibold group-hover:text-brass">{m.title}</p>
+                <p className="mt-2 truncate text-sm font-semibold group-hover:text-velvet-hi">{m.title}</p>
                 <div className="mt-1 flex items-center gap-2 text-xs text-mute">
                   <AgeBadge rating={m.ageRating} withTooltip={false} />
                   {m.isComingSoon ? 'Coming soon' : formatRuntime(m.runtimeMinutes)}
@@ -77,7 +77,7 @@ export default function HomePage() {
       <Section
         title="Now Playing"
         action={
-          <Link to="/sessions" className="mb-1.5 text-[15px] font-semibold text-brass hover:underline">
+          <Link to="/sessions" className="mb-1.5 text-[15px] font-semibold text-velvet hover:underline">
             See All
           </Link>
         }

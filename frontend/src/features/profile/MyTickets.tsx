@@ -26,7 +26,7 @@ function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) =
         <div className="flex items-start justify-between gap-4">
           <div>
             <h3 className="text-xl font-semibold">
-              <Link to={`/movies/${s.movie.slug}`} className="hover:text-brass">
+              <Link to={`/movies/${s.movie.slug}`} className="hover:text-velvet-hi">
                 {s.movie.title}
               </Link>
             </h3>
@@ -106,7 +106,7 @@ export function MyTickets() {
   return (
     <section aria-labelledby="tickets-heading" className="rounded-lg border border-line bg-ink-2 p-8">
       <div className="flex items-center justify-between gap-6">
-        <h2 id="tickets-heading" className="display text-[36px]">
+        <h2 id="tickets-heading" className="display text-[24px]">
           My Tickets
         </h2>
         <div role="tablist" aria-label="Ticket period" className="flex rounded-md border border-line p-1">
@@ -116,7 +116,7 @@ export function MyTickets() {
               role="tab"
               aria-selected={tab === t}
               onClick={() => setTab(t)}
-              className={`h-9 rounded-sm px-5 text-sm font-semibold capitalize ${tab === t ? 'bg-brass text-ink' : 'text-mute hover:text-screen'}`}
+              className={`h-9 rounded-sm px-5 text-sm font-semibold capitalize ${tab === t ? 'bg-velvet text-screen' : 'text-mute hover:text-screen'}`}
             >
               {t}
             </button>

@@ -46,7 +46,7 @@ export function FieldShell({ id, label, required, error, valid, hint, children }
 
 export const inputClass = (error?: string, valid?: boolean) =>
   `h-11 w-full rounded-md border bg-ink-3 px-3 pr-9 text-[15px] text-screen placeholder:text-mute/70 outline-none transition-colors
-   disabled:cursor-not-allowed disabled:opacity-60 focus:border-brass ${
+   disabled:cursor-not-allowed disabled:opacity-60 focus:border-velvet ${
      error ? 'border-err' : valid ? 'border-ok' : 'border-line'
    }`
 

@@ -1,19 +1,20 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'brass'
+type Variant = 'primary' | 'secondary' | 'ghost' | 'brass' | 'light'
 type Size = 'sm' | 'md' | 'lg'
 
 const variants: Record<Variant, string> = {
   primary: 'bg-velvet text-screen hover:bg-velvet-hi disabled:bg-ink-3 disabled:text-mute',
-  secondary: 'border border-line bg-ink-2 text-screen hover:border-mute disabled:text-mute',
+  secondary: 'bg-ink-3 text-screen hover:bg-line disabled:text-mute',
   ghost: 'text-screen hover:bg-ink-3 disabled:text-mute',
-  brass: 'bg-brass text-ink hover:brightness-110 disabled:bg-ink-3 disabled:text-mute',
+  brass: 'bg-velvet text-screen hover:brightness-110 disabled:bg-ink-3 disabled:text-mute',
+  light: 'bg-screen text-ink hover:bg-screen/90 disabled:bg-ink-3 disabled:text-mute',
 }
 
 const sizes: Record<Size, string> = {
-  sm: 'h-9 px-3 text-sm',
+  sm: 'h-9 px-4 text-sm',
   md: 'h-11 px-5 text-[15px]',
-  lg: 'h-13 px-7 text-base',
+  lg: 'h-12 px-7 text-base',
 }
 
 export function Spinner({ className = '' }: { className?: string }) {
@@ -27,7 +28,7 @@ export function Spinner({ className = '' }: { className?: string }) {
 
 /** Button styling for links that look like buttons (avoids nesting <button> in <a>). */
 export const buttonClass = (variant: Variant = 'primary', size: Size = 'md') =>
-  `inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors ${variants[variant]} ${sizes[size]}`
+  `inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors ${variants[variant]} ${sizes[size]}`
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
@@ -51,7 +52,7 @@ export function Button({
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={`inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
       {...rest}
     >
       {loading && <Spinner />}
