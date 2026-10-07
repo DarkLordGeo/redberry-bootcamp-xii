@@ -1,6 +1,80 @@
 @import "tailwindcss";
 
-/* Design tokens from the Figma file go here */
+/*
+ * Kino XII theme. Every colour/size the UI uses lives here, so matching the
+ * Figma file is a matter of changing these values, not the components.
+ */
 @theme {
-  --font-sans: "FiraGO", system-ui, sans-serif;
+  --font-sans: "Archivo", system-ui, sans-serif;
+
+  --color-ink: #15111b;        /* page background — a dark auditorium */
+  --color-ink-2: #1d1725;      /* raised surfaces: panels, cards, modals */
+  --color-ink-3: #2b2335;      /* inputs, chips, dividers */
+  --color-line: #3a3045;       /* borders */
+  --color-screen: #f3eee4;     /* primary text — the projector-screen white */
+  --color-mute: #a097ab;       /* secondary text */
+  --color-velvet: #c23a4e;     /* primary actions, selected seats */
+  --color-velvet-hi: #d8505f;
+  --color-brass: #e8b44c;      /* prices, timers, focus, marquee accents */
+  --color-ok: #4fb286;
+  --color-err: #ef6a5e;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  @keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-ink);
+  }
+  body {
+    background: var(--color-ink);
+    color: var(--color-screen);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 2px;
+  }
+  button:not(:disabled), summary, label[for] {
+    cursor: pointer;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+  }
+}
+
+@layer components {
+  /* Condensed Archivo for titles: reads like a marquee board. */
+  .display {
+    font-stretch: 72%;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--color-ink-2) 0, var(--color-ink-3) 200px, var(--color-ink-2) 400px);
+    background-size: 800px 100%;
+    animation: var(--animate-shimmer);
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
