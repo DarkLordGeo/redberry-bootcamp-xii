@@ -1,70 +1,89 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchTickets, refundOrder } from '@/api/endpoints'
 import type { Order } from '@/api/types'
-import { FormatBadge, LanguageBadge } from '@/components/ui/Badges'
+import { RatingChip } from '@/components/ui/Badges'
 import { Button, buttonClass } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/States'
 import { Poster } from '@/features/movies/MovieCards'
-import { formatLongDate, formatPrice } from '@/lib/format'
+import { formatLongDate, formatPrice, formatRuntime } from '@/lib/format'
 import { useToast } from '@/state/toast'
 
 type Tab = 'upcoming' | 'past'
 const REFUND_CLOSED = 'Refunds close 2 hours before the session starts.'
 
+function Info({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div>
+      <p className="overline !text-[10px] text-mute">{label}</p>
+      <p className="mt-1.5 text-[13px] font-semibold">{children}</p>
+    </div>
+  )
+}
+
+const refundUntil = (startsAt: string) => {
+  const d = new Date(new Date(startsAt).getTime() - 2 * 3600_000)
+  return `${d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}, ${d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}`
+}
+
 function TicketCard({ order, onRefund }: { order: Order; onRefund?: (o: Order) => void }) {
   const s = order.session
   const refunded = order.status === 'refunded'
   return (
-    <article className="flex gap-6 rounded-lg border border-line bg-ink p-5">
+    <article className="flex gap-6 rounded-2xl bg-ink-2 p-5">
       <Link to={`/movies/${s.movie.slug}`} tabIndex={-1} aria-hidden className="shrink-0">
-        <Poster movie={s.movie} className="h-[168px] w-[112px]" />
+        <Poster movie={s.movie} className="h-[132px] w-[88px] rounded-lg" />
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-semibold">
-              <Link to={`/movies/${s.movie.slug}`} className="hover:text-velvet-hi">
-                {s.movie.title}
-              </Link>
-            </h3>
-            <p className="mt-1 text-[15px] text-mute">
-              {s.venue.name} · Hall {s.hall.name} · {formatLongDate(s.date)} · <span className="text-screen">{s.time}</span>
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-mute">Order</p>
-            <p className="font-semibold">{order.reference}</p>
-          </div>
+        <div className="flex items-center gap-2.5">
+          <h3 className="text-[17px] font-extrabold uppercase">
+            <Link to={`/movies/${s.movie.slug}`} className="hover:text-velvet-hi">
+              {s.movie.title}
+            </Link>
+          </h3>
+          <RatingChip rating={s.movie.ageRating} small />
+          <span className="text-xs text-mute">{formatRuntime(s.movie.runtimeMinutes)}</span>
+          {refunded && <span className="rounded-md bg-err/15 px-2 py-0.5 text-[11px] font-semibold text-err">Refunded</span>}
         </div>
-        <div className="mt-3 flex items-center gap-1.5">
-          <FormatBadge format={s.format} />
-          <LanguageBadge language={s.language} />
-          {refunded && <span className="ml-2 rounded-sm bg-err/15 px-2 py-0.5 text-xs font-semibold text-err">Refunded</span>}
+        <div className="mt-3 flex gap-12">
+          <Info label="Date">
+            {formatLongDate(s.date)} · {s.time}
+          </Info>
+          <Info label="Venue">
+            {s.venue.name} · Hall {s.hall.name}
+          </Info>
+          <Info label="Format">
+            {s.format.name} · {s.language.name}
+          </Info>
         </div>
-        <ul className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
+          <span className="overline mr-1 !text-[10px] text-mute">Seats</span>
           {order.tickets.map((t) => (
-            <li key={t.id} className="rounded-md border border-line px-2.5 py-1 text-sm">
-              <span className="font-semibold">{t.seatCode}</span> <span className="text-mute">· {t.ticketType.name}</span>
-            </li>
+            <span key={t.id} className="rounded-md bg-white/10 px-2 py-1 text-[11px] font-semibold">
+              {t.seatCode} · {t.ticketType.name}
+            </span>
           ))}
-        </ul>
-        <div className="mt-auto flex items-end justify-between gap-4 pt-4">
-          <p className="text-[15px]">
-            <span className="text-mute">{refunded ? 'Refunded' : 'Total paid'} </span>
-            <span className="font-semibold text-brass">{formatPrice(order.totalPrice)}</span>
-          </p>
-          {onRefund && (
-            <div className="flex items-center gap-3">
-              {!order.isRefundable && <span className="text-sm text-mute">{REFUND_CLOSED}</span>}
-              <Button variant="secondary" size="sm" disabled={!order.isRefundable} title={order.isRefundable ? undefined : REFUND_CLOSED} onClick={() => onRefund(order)}>
-                Refund
-              </Button>
-            </div>
-          )}
         </div>
+      </div>
+      <div className="flex w-[240px] shrink-0 flex-col">
+        <p className="overline !text-[10px] text-mute">Order</p>
+        <p className="mt-1 text-[13px] font-bold">#{order.reference}</p>
+        <div className="mt-auto flex items-end justify-between pb-3">
+          <span className="text-xs text-mute">{refunded ? 'Refunded' : 'Total paid'}</span>
+          <span className="display text-[22px]">{formatPrice(order.totalPrice)}</span>
+        </div>
+        {onRefund && (
+          <>
+            <Button variant="secondary" size="sm" className="w-full" disabled={!order.isRefundable} title={order.isRefundable ? undefined : REFUND_CLOSED} onClick={() => onRefund(order)}>
+              Refund
+            </Button>
+            <p className="mt-2 text-center text-[11px] text-mute">
+              {order.isRefundable ? `Refundable until ${refundUntil(s.startsAt)}` : REFUND_CLOSED}
+            </p>
+          </>
+        )}
       </div>
     </article>
   )
@@ -77,6 +96,9 @@ export function MyTickets() {
   const toast = useToast()
   const [confirming, setConfirming] = useState<Order | null>(null)
   const tickets = useQuery({ queryKey: ['tickets', tab], queryFn: () => fetchTickets(tab) })
+  const other = useQuery({ queryKey: ['tickets', tab === 'upcoming' ? 'past' : 'upcoming'], queryFn: () => fetchTickets(tab === 'upcoming' ? 'past' : 'upcoming') })
+  const counts: Record<Tab, number | undefined> =
+    tab === 'upcoming' ? { upcoming: tickets.data?.length, past: other.data?.length } : { past: tickets.data?.length, upcoming: other.data?.length }
 
   const refund = useMutation({
     mutationFn: (o: Order) => refundOrder(o.reference),
@@ -104,27 +126,23 @@ export function MyTickets() {
   }
 
   return (
-    <section aria-labelledby="tickets-heading" className="rounded-lg border border-line bg-ink-2 p-8">
-      <div className="flex items-center justify-between gap-6">
-        <h2 id="tickets-heading" className="display text-[24px]">
-          My Tickets
-        </h2>
-        <div role="tablist" aria-label="Ticket period" className="flex rounded-md border border-line p-1">
-          {(['upcoming', 'past'] as const).map((t) => (
-            <button
-              key={t}
-              role="tab"
-              aria-selected={tab === t}
-              onClick={() => setTab(t)}
-              className={`h-9 rounded-sm px-5 text-sm font-semibold capitalize ${tab === t ? 'bg-velvet text-screen' : 'text-mute hover:text-screen'}`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
+    <section aria-label="My tickets">
+      <div role="tablist" aria-label="Ticket period" className="inline-flex rounded-full bg-ink-2 p-1">
+        {(['upcoming', 'past'] as const).map((t) => (
+          <button
+            key={t}
+            role="tab"
+            aria-selected={tab === t}
+            onClick={() => setTab(t)}
+            className={`flex h-8 items-center gap-2 rounded-full px-4 text-[13px] font-bold capitalize ${tab === t ? 'bg-ink-3 text-screen' : 'text-mute hover:text-screen'}`}
+          >
+            {t}
+            {counts[t] != null && <span className="text-[11px] font-semibold text-mute">{counts[t]}</span>}
+          </button>
+        ))}
       </div>
 
-      <div className="mt-6" role="tabpanel">
+      <div className="mt-5" role="tabpanel">
         {tickets.isPending ? (
           <div className="space-y-4" aria-busy="true" aria-label="Loading tickets">
             {Array.from({ length: 2 }, (_, i) => (

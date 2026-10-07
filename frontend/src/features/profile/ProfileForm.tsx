@@ -69,28 +69,13 @@ export function ProfileForm({ user }: { user: User }) {
   const note = eligibilityNote(user.age, options.data?.ageRatings ?? [])
 
   return (
-    <section aria-labelledby="personal-heading" className="rounded-lg border border-line bg-ink-2 p-8">
-      <div className="flex items-start justify-between gap-6">
-        <div>
-          <h2 id="personal-heading" className="display text-[24px]">
-            Personal Information
-          </h2>
-          <p className="mt-1 text-mute">Booking needs your name, mobile number and date of birth.</p>
-        </div>
-        {user.profileComplete ? (
-          <span className="flex items-center gap-2 rounded-md border border-ok/50 bg-ok/10 px-3 py-2 text-sm font-semibold text-ok">
-            Profile Complete ✓
-          </span>
-        ) : (
-          <span className="flex items-center gap-2 rounded-md border border-brass/50 bg-brass/10 px-3 py-2 text-sm font-semibold text-brass">
-            <span className="size-2 rounded-full bg-brass" /> Incomplete
-          </span>
-        )}
-      </div>
-
-      {!user.profileComplete && (
-        <div role="alert" className="mt-6 rounded-md border border-brass/50 bg-brass/10 px-4 py-3 text-[15px] text-brass">
-          {PROFILE_REQUIRED_MESSAGE}
+    <section aria-label="Personal information" className="max-w-[880px]">
+      {user.profileComplete ? (
+        <p className="inline-flex rounded-lg bg-ok/15 px-3 py-2 text-[13px] font-semibold text-ok">Profile Complete ✓</p>
+      ) : (
+        <div role="alert" className="rounded-xl bg-brass/15 px-4 py-3">
+          <p className="text-[13px] font-semibold text-brass">Profile incomplete</p>
+          <p className="mt-0.5 text-xs text-mute">{PROFILE_REQUIRED_MESSAGE}</p>
         </div>
       )}
 
@@ -100,16 +85,14 @@ export function ProfileForm({ user }: { user: User }) {
           setFormError(null)
           save.mutate(v)
         })}
-        className="mt-8 grid max-w-[880px] grid-cols-2 gap-x-6 gap-y-5"
+        className="mt-6 flex flex-col gap-5"
       >
-        <div className="col-span-2">
-          <FormError message={formError} />
-        </div>
-        <TextField id="pf-name" label="Full Name" autoComplete="name" maxLength={60} required {...fieldState(form, 'fullName')} {...form.register('fullName')} />
+        <FormError message={formError} />
+        <TextField id="pf-name" label="Full name" autoComplete="name" maxLength={60} required {...fieldState(form, 'fullName')} {...form.register('fullName')} />
         <TextField id="pf-email" label="Email" type="email" disabled readOnly hint="Set at registration and can’t be changed." {...form.register('email')} />
         <TextField
           id="pf-mobile"
-          label="Mobile Number"
+          label="Mobile number"
           type="tel"
           inputMode="numeric"
           placeholder="5XX XXX XXX"
@@ -120,7 +103,7 @@ export function ProfileForm({ user }: { user: User }) {
         />
         <TextField
           id="pf-dob"
-          label="Date of Birth"
+          label="Date of birth"
           type="date"
           autoComplete="bday"
           required
@@ -129,7 +112,7 @@ export function ProfileForm({ user }: { user: User }) {
           {...fieldState(form, 'dateOfBirth')}
           {...form.register('dateOfBirth')}
         />
-        <SelectField id="pf-venue" label="Preferred Venue" {...form.register('preferredVenueId')}>
+        <SelectField id="pf-venue" label="Preferred venue (optional)" {...form.register('preferredVenueId')}>
           <option value="">No preference</option>
           {options.data?.venues.map((v) => (
             <option key={v.id} value={v.id}>
@@ -137,8 +120,8 @@ export function ProfileForm({ user }: { user: User }) {
             </option>
           ))}
         </SelectField>
-        <div className="col-span-2 mt-2 flex items-center gap-4">
-          <Button type="submit" size="lg" loading={save.isPending} disabled={!isDirty || !isValid}>
+        <div className="mt-1 flex items-center gap-4">
+          <Button type="submit" loading={save.isPending} disabled={!isDirty || !isValid}>
             Save Changes
           </Button>
           {isDirty && (
