@@ -1,4 +1,4 @@
-# Redberry Bootcamp XII — Assignment
+# Kino XII — Redberry Bootcamp XII Assignment
 
 Deadline: **11 Oct 2026, 23:59** (submit with the email you registered with).
 Bonus: a Loom video (max 5 min, link set to Public) explaining your decisions.
@@ -19,7 +19,9 @@ npm run dev
 - `src/components/` – shared UI
 - `src/index.css` – Tailwind `@theme` tokens (fill from Figma)
 
-## TODO once the docs are in
+Full spec in English: [docs/ASSIGNMENT.md](docs/ASSIGNMENT.md)
+
+## TODO
 - [ ] Requirements → pages/routes
 - [ ] Figma tokens (colors, fonts, spacing)
 - [ ] API endpoints + types
