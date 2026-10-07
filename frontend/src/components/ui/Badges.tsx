@@ -1,18 +1,22 @@
+import type { ReactNode } from 'react'
 import type { AgeRating, Format, Language } from '@/api/types'
+import { formatRuntime } from '@/lib/format'
 
-const ratingTone: Record<string, string> = {
-  G: 'border-ok/60 text-ok',
-  PG: 'border-ok/60 text-ok',
-  '12+': 'border-brass/70 text-brass',
-  '16+': 'border-velvet-hi/70 text-velvet-hi',
-  '18+': 'border-err text-err',
+/** Neutral tag from the design: white-tinted pill, SemiBold 12. */
+export function Chip({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`inline-flex h-7 items-center gap-1.5 rounded-md bg-white/10 px-2.5 text-xs font-semibold ${className}`}>
+      {children}
+    </span>
+  )
 }
 
-export function AgeBadge({ rating, withTooltip = true }: { rating: AgeRating; withTooltip?: boolean }) {
+/** Age rating in the design: red-tinted chip with red text, description as tooltip. */
+export function RatingChip({ rating, small = false }: { rating: AgeRating; small?: boolean }) {
   return (
     <span
-      title={withTooltip ? rating.description : undefined}
-      className={`relative inline-flex h-6 min-w-9 items-center justify-center rounded-sm border px-1.5 text-xs font-bold ${ratingTone[rating.code] ?? 'border-line text-mute'}`}
+      title={rating.description}
+      className={`relative inline-flex items-center rounded-md bg-velvet/15 font-semibold text-velvet ${small ? 'h-5 px-1.5 text-[11px]' : 'h-7 px-2.5 text-xs'}`}
     >
       <span className="sr-only">Rated </span>
       {rating.code}
@@ -20,20 +24,32 @@ export function AgeBadge({ rating, withTooltip = true }: { rating: AgeRating; wi
   )
 }
 
+export function RuntimeChip({ minutes }: { minutes: number }) {
+  return (
+    <Chip>
+      <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+        <circle cx="8" cy="8" r="6" />
+        <path d="M8 4.8V8l2 1.4" strokeLinecap="round" />
+      </svg>
+      {formatRuntime(minutes)}
+    </Chip>
+  )
+}
+
+/** Kept for existing callers. */
+export function AgeBadge({ rating }: { rating: AgeRating; withTooltip?: boolean }) {
+  return <RatingChip rating={rating} small />
+}
+
 export function FormatBadge({ format }: { format: Format }) {
   return (
-    <span className="inline-flex h-6 items-center rounded-sm bg-ink-3 px-2 text-[11px] font-bold tracking-wide text-screen">
-      {format.name}
-    </span>
+    <span className="inline-flex h-5 items-center rounded-sm bg-white/10 px-1.5 text-[11px] font-semibold">{format.name}</span>
   )
 }
 
 export function LanguageBadge({ language }: { language: Language }) {
   return (
-    <span
-      title={language.name}
-      className="inline-flex h-6 items-center rounded-sm border border-line px-2 text-[11px] font-semibold text-mute"
-    >
+    <span title={language.name} className="inline-flex h-5 items-center rounded-sm bg-white/10 px-1.5 text-[11px] font-semibold text-mute">
       {language.code}
     </span>
   )

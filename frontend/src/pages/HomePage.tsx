@@ -37,9 +37,9 @@ function Row({ children, label }: { children: ReactNode; label: string }) {
 
 function Section({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
-    <section className="mx-auto mt-20 max-w-[1920px] px-16">
-      <div className="mb-6 flex items-end gap-6 pr-28">
-        <h2 className="display text-[28px] uppercase">{title}</h2>
+    <section className="mx-auto mt-14 max-w-[1920px] px-16">
+      <div className="mb-5 flex items-center justify-between gap-6 pr-28">
+        <h2 className={`display text-[20px] ${title === 'Recently viewed' ? '' : 'uppercase'}`}>{title}</h2>
         {action}
       </div>
       {children}
@@ -61,12 +61,18 @@ export default function HomePage() {
         <Section title="Recently viewed">
           <Row label="Recently viewed films">
             {recent.map((m) => (
-              <Link key={m.id} to={`/movies/${m.slug}`} className="group w-[160px] shrink-0 snap-start">
-                <Poster movie={m} className="aspect-[2/3] w-full transition-transform group-hover:-translate-y-1" />
-                <p className="mt-2 truncate text-sm font-semibold group-hover:text-velvet-hi">{m.title}</p>
-                <div className="mt-1 flex items-center gap-2 text-xs text-mute">
-                  <AgeBadge rating={m.ageRating} withTooltip={false} />
-                  {m.isComingSoon ? 'Coming soon' : formatRuntime(m.runtimeMinutes)}
+              <Link
+                key={m.id}
+                to={`/movies/${m.slug}`}
+                className="flex w-[330px] shrink-0 snap-start items-center gap-4 rounded-xl bg-ink-2 p-3 transition-colors hover:bg-ink-3"
+              >
+                <Poster movie={m} className="h-[66px] w-[66px] shrink-0 rounded-lg" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-extrabold uppercase">{m.title}</p>
+                  <p className="mt-1 text-xs text-mute">{m.isComingSoon ? 'Coming soon' : formatRuntime(m.runtimeMinutes)}</p>
+                  <div className="mt-1.5">
+                    <AgeBadge rating={m.ageRating} />
+                  </div>
                 </div>
               </Link>
             ))}
@@ -77,8 +83,8 @@ export default function HomePage() {
       <Section
         title="Now Playing"
         action={
-          <Link to="/sessions" className="mb-1.5 text-[15px] font-semibold text-velvet hover:underline">
-            See All
+          <Link to="/sessions" className="text-[13px] font-bold text-velvet hover:underline">
+            See all
           </Link>
         }
       >

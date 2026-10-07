@@ -25,22 +25,20 @@ export function Poster({ movie, className = '' }: { movie: Pick<Movie, 'posterUr
 export function NowPlayingCard({ movie }: { movie: Movie }) {
   const navigate = useNavigate()
   return (
-    <article className="group flex w-[280px] shrink-0 flex-col">
+    <article className="group flex w-[264px] shrink-0 flex-col rounded-2xl bg-ink-2 p-3 transition-colors hover:bg-ink-3">
       <Link to={`/movies/${movie.slug}`} className="block" tabIndex={-1} aria-hidden>
-        <Poster movie={movie} className="aspect-[2/3] w-full transition-transform duration-300 group-hover:-translate-y-1" />
+        <Poster movie={movie} className="aspect-[2/3] w-full rounded-xl" />
       </Link>
-      <div className="mt-4 flex flex-1 flex-col gap-2">
-        <h3 className="text-lg font-semibold leading-snug">
-          <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
-            {movie.title}
-          </Link>
+      <div className="mt-3 flex flex-1 flex-col gap-2 px-1 pb-1">
+        <h3 className="truncate text-[15px] font-extrabold uppercase">
+          <Link to={`/movies/${movie.slug}`}>{movie.title}</Link>
         </h3>
-        <div className="flex items-center gap-3 text-sm text-mute">
+        <div className="flex items-center gap-2 text-xs text-mute">
           <AgeBadge rating={movie.ageRating} />
           <span>{formatRuntime(movie.runtimeMinutes)}</span>
-          <span className="ml-auto font-semibold text-screen">from {formatPrice(movie.fromPrice)}</span>
+          <span className="ml-auto text-[13px] font-bold text-screen">from {formatPrice(movie.fromPrice)}</span>
         </div>
-        <Button className="mt-2 w-full" onClick={() => navigate(`/movies/${movie.slug}`)}>
+        <Button size="sm" className="mt-1 w-full" onClick={() => navigate(`/movies/${movie.slug}`)}>
           Buy Ticket
         </Button>
       </div>
@@ -48,7 +46,7 @@ export function NowPlayingCard({ movie }: { movie: Movie }) {
   )
 }
 
-export function NotifyButton({ movie, className = '' }: { movie: Movie; className?: string }) {
+export function NotifyButton({ movie, className = "", size = "md" }: { movie: Movie; className?: string; size?: "sm" | "md" }) {
   const protect = useProtectedAction()
   const qc = useQueryClient()
   const toast = useToast()
@@ -65,7 +63,7 @@ export function NotifyButton({ movie, className = '' }: { movie: Movie; classNam
 
   if (movie.isNotified) {
     return (
-      <Button variant="secondary" disabled className={className}>
+      <Button variant="secondary" size={size} disabled className={className}>
         ✓ You’ll be notified
       </Button>
     )
@@ -73,6 +71,7 @@ export function NotifyButton({ movie, className = '' }: { movie: Movie; classNam
   return (
     <Button
       variant="secondary"
+      size={size}
       className={className}
       loading={mutation.isPending}
       onClick={() => protect(() => mutation.mutateAsync().then(() => undefined, () => undefined))}
@@ -85,23 +84,21 @@ export function NotifyButton({ movie, className = '' }: { movie: Movie; classNam
 /** Coming Soon: no sessions, so the card leads to details and a Notify Me action — never to seat selection. */
 export function ComingSoonCard({ movie }: { movie: Movie }) {
   return (
-    <article className="flex w-[220px] shrink-0 flex-col">
+    <article className="flex w-[232px] shrink-0 flex-col rounded-2xl bg-ink-2 p-3">
       <Link to={`/movies/${movie.slug}`} className="relative block">
-        <Poster movie={movie} className="aspect-[2/3] w-full" />
-        <span className="absolute left-2 top-2 rounded-sm bg-ink/85 px-2 py-1 text-xs font-semibold text-brass">
+        <Poster movie={movie} className="aspect-[2/3] w-full rounded-xl" />
+        <span className="absolute left-2 top-2 rounded-md bg-ink/85 px-2 py-1 text-[11px] font-semibold text-brass">
           {formatReleaseDate(movie.releaseDate)}
         </span>
       </Link>
-      <h3 className="mt-3 font-semibold leading-snug">
-        <Link to={`/movies/${movie.slug}`} className="hover:text-velvet-hi">
-          {movie.title}
-        </Link>
+      <h3 className="mt-3 truncate px-1 text-[15px] font-extrabold uppercase">
+        <Link to={`/movies/${movie.slug}`}>{movie.title}</Link>
       </h3>
-      <div className="mt-1.5 flex items-center gap-3 text-sm text-mute">
+      <div className="mt-2 flex items-center gap-2 px-1 text-xs text-mute">
         <AgeBadge rating={movie.ageRating} />
         <span>{formatRuntime(movie.runtimeMinutes)}</span>
       </div>
-      <NotifyButton movie={movie} className="mt-3 w-full" />
+      <NotifyButton movie={movie} className="mt-3 w-full" size="sm" />
     </article>
   )
 }
