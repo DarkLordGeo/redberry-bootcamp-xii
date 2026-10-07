@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query'
 import { ApiError } from '@/api/client'
 import { fetchMovie, fetchMovieSessions } from '@/api/endpoints'
 import type { MovieDetail } from '@/api/types'
-import { AgeBadge, FormatBadge } from '@/components/ui/Badges'
+import { Chip, RatingChip, RuntimeChip } from '@/components/ui/Badges'
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/States'
 import { NotifyButton, Poster } from '@/features/movies/MovieCards'
 import { DatePicker } from '@/features/sessions/DatePicker'
 import { SessionButton } from '@/features/sessions/SessionButton'
-import { formatLongDate, formatReleaseDate, formatRuntime, nextSevenDays, todayISO } from '@/lib/format'
+import { formatLongDate, formatPrice, formatReleaseDate, nextSevenDays, todayISO } from '@/lib/format'
 import { addRecentlyViewed } from '@/lib/recentlyViewed'
 import { useAuth } from '@/state/auth'
 import { ageGateMessage } from '@/state/useProtectedAction'
@@ -18,8 +18,8 @@ import NotFoundPage from './NotFoundPage'
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <dt className="text-sm text-mute">{label}</dt>
-      <dd className="mt-1 text-[15px]">{children}</dd>
+      <dt className="overline !text-[11px] text-mute">{label}</dt>
+      <dd className="mt-1.5 text-sm font-semibold">{children}</dd>
     </div>
   )
 }
@@ -37,17 +37,13 @@ function Sessions({ movie }: { movie: MovieDetail }) {
   const blocked = tooYoung ? ageGateMessage(movie.ageRating) : undefined
 
   return (
-    <section className="mt-16" aria-labelledby="sessions-heading">
-      <div className="flex items-end justify-between gap-8">
-        <div>
-          <h2 id="sessions-heading" className="display text-[28px]">
-            Sessions
-          </h2>
-          <p className="mt-1 text-mute">{formatLongDate(date)}</p>
-        </div>
-        <div className="w-[640px]">
-          <DatePicker value={date} onChange={setDate} available={movie.availableDates} />
-        </div>
+    <section aria-labelledby="sessions-heading">
+      <h2 id="sessions-heading" className="display text-[20px]">
+        Sessions
+      </h2>
+      <p className="mt-2 text-xs text-mute">{formatLongDate(date)}</p>
+      <div className="mt-4 w-[560px]">
+        <DatePicker value={date} onChange={setDate} available={movie.availableDates} />
       </div>
 
       {blocked && (
@@ -78,19 +74,31 @@ function Sessions({ movie }: { movie: MovieDetail }) {
             body="Pick another date above — days without showtimes are greyed out."
           />
         ) : (
-          <div className="space-y-10">
-            {sessions.data.map(({ venue, sessions: list }) => (
-              <div key={venue.id}>
-                <h3 className="text-lg font-semibold">
-                  {venue.name} <span className="font-normal text-mute">· {venue.city}</span>
-                </h3>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {list.map((s) => (
-                    <SessionButton key={s.id} session={s} ageRating={movie.ageRating} showVenue={false} blockedReason={blocked} />
-                  ))}
+          <div className="space-y-8">
+            {sessions.data.map(({ venue, sessions: list }) => {
+              const halls = [...new Set(list.map((s) => s.hall.name))]
+              return (
+                <div key={venue.id}>
+                  <h3 className="text-[15px] font-extrabold">
+                    {venue.name} <span className="text-xs font-normal text-mute">· {venue.city}</span>
+                  </h3>
+                  <div className="mt-3 flex flex-wrap gap-4">
+                    {halls.map((hall) => (
+                      <div key={hall} className="rounded-2xl border border-line/60 p-3">
+                        <p className="mb-2.5 px-1 text-xs font-bold text-mute">Hall {hall}</p>
+                        <div className="flex flex-wrap gap-2.5">
+                          {list
+                            .filter((s) => s.hall.name === hall)
+                            .map((s) => (
+                              <SessionButton key={s.id} session={s} ageRating={movie.ageRating} showVenue={false} blockedReason={blocked} />
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
@@ -109,7 +117,7 @@ export default function MoviePage() {
   if (movie.isPending) {
     return (
       <div className="mx-auto max-w-[1920px] px-16 pt-10" aria-busy="true">
-        <Skeleton className="h-[440px] w-full rounded-lg" />
+        <Skeleton className="-mt-[72px] h-[560px] w-full rounded-none" />
         <div className="mt-10 flex gap-10">
           <Skeleton className="h-6 w-1/2" />
         </div>
@@ -126,58 +134,75 @@ export default function MoviePage() {
   }
 
   const m = movie.data
+  const restricted = m.ageRating.minAge >= 16
   return (
     <article>
-      <div className="relative h-[460px] overflow-hidden">
-        {m.backdropUrl && <img src={m.backdropUrl} alt="" className="absolute inset-0 size-full object-cover opacity-60" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
-      </div>
-
-      <div className="relative mx-auto -mt-64 max-w-[1920px] px-16">
-        <div className="flex gap-12">
-          <Poster movie={m} className="aspect-[2/3] w-[300px] shrink-0 border border-line shadow-2xl shadow-black/60" />
-          <div className="flex min-w-0 flex-1 flex-col pt-24">
-            <div className="flex items-center gap-3 text-sm text-mute">
-              <AgeBadge rating={m.ageRating} />
-              <span>{formatRuntime(m.runtimeMinutes)}</span>
-              <span>{m.genres.map((g) => g.name).join(', ')}</span>
-              {m.isComingSoon && <span className="font-semibold text-brass">Coming soon</span>}
+      <div className="relative -mt-[72px] overflow-hidden">
+        {m.backdropUrl && <img src={m.backdropUrl} alt="" className="absolute inset-0 size-full object-cover" />}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(7_12_28/0.9)_0%,rgb(7_12_28/0.55)_50%,rgb(7_12_28/0.25)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
+        <div className="relative mx-auto flex max-w-[1920px] items-end gap-12 px-16 pb-16 pt-[136px]">
+          <Poster movie={m} className="aspect-[2/3] w-[280px] shrink-0 rounded-2xl shadow-2xl shadow-black/60" />
+          <div className="min-w-0 max-w-[760px] pb-2">
+            <span className="overline text-velvet">
+              {m.isComingSoon ? `Coming soon · ${formatReleaseDate(m.releaseDate)}` : m.genres.map((g) => g.name).join(' / ')}
+            </span>
+            <h1 className="display mt-3 text-[40px] uppercase [text-wrap:balance]">{m.title}</h1>
+            <p className="mt-4 max-w-[68ch] leading-[1.3] text-screen/90">{m.synopsis}</p>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <RatingChip rating={m.ageRating} />
+              <RuntimeChip minutes={m.runtimeMinutes} />
+              {m.formats.map((f) => (
+                <Chip key={f.id}>{f.name}</Chip>
+              ))}
             </div>
-            <h1 className="display mt-4 text-[88px] [text-wrap:balance]">{m.title}</h1>
-            <p className="mt-6 max-w-[68ch] text-[17px] leading-relaxed text-screen/85">{m.synopsis}</p>
-
-            <dl className="mt-10 grid max-w-[900px] grid-cols-3 gap-x-10 gap-y-6">
-              <Fact label="Age rating">
-                <span className="flex items-start gap-2">
-                  <AgeBadge rating={m.ageRating} withTooltip={false} />
-                  <span className="text-sm text-mute">{m.ageRating.description}</span>
-                </span>
-              </Fact>
-              <Fact label="Release date">{formatReleaseDate(m.releaseDate)}</Fact>
-              <Fact label="Duration">{formatRuntime(m.runtimeMinutes)}</Fact>
-              <Fact label="Genre">{m.genres.map((g) => g.name).join(', ') || '—'}</Fact>
-              <Fact label="Director">{m.director || '—'}</Fact>
-              <Fact label="Starring">{m.cast || '—'}</Fact>
-              <Fact label="Formats">
-                <span className="flex flex-wrap gap-1.5">
-                  {m.formats.length ? m.formats.map((f) => <FormatBadge key={f.id} format={f} />) : '—'}
-                </span>
-              </Fact>
-            </dl>
           </div>
         </div>
+      </div>
 
-        {m.isComingSoon ? (
-          <section className="mt-16 flex items-center justify-between rounded-lg border border-line bg-ink-2 px-8 py-7">
-            <div>
-              <h2 className="display text-[24px]">Opens {formatReleaseDate(m.releaseDate)}</h2>
-              <p className="mt-1 text-mute">Sessions aren’t on sale yet. Get a heads-up when they are.</p>
+      <div className="mx-auto mt-10 grid max-w-[1920px] grid-cols-[1fr_400px] gap-16 px-16">
+        <div className="min-w-0">
+          {m.isComingSoon ? (
+            <section className="flex items-center justify-between rounded-2xl bg-ink-2 px-8 py-7">
+              <div>
+                <h2 className="display text-[20px]">Opens {formatReleaseDate(m.releaseDate)}</h2>
+                <p className="mt-2 text-mute">Sessions aren’t on sale yet. Get a heads-up when they are.</p>
+              </div>
+              <NotifyButton movie={m} />
+            </section>
+          ) : (
+            <Sessions movie={m} />
+          )}
+        </div>
+
+        <aside aria-labelledby="details-heading">
+          <h2 id="details-heading" className="display text-[20px]">
+            Details
+          </h2>
+          <dl className="mt-5 space-y-4">
+            <Fact label="Director">{m.director || '—'}</Fact>
+            <Fact label="Main cast">{m.cast || '—'}</Fact>
+            <Fact label="Genre">{m.genres.map((g) => g.name).join(', ') || '—'}</Fact>
+            <Fact label="Duration">{m.runtimeMinutes} minutes</Fact>
+            <Fact label="Release date">{formatReleaseDate(m.releaseDate)}</Fact>
+            <Fact label="Formats">{m.formats.map((f) => f.name).join(', ') || '—'}</Fact>
+            {!m.isComingSoon && <Fact label="From">{formatPrice(m.fromPrice)}</Fact>}
+            <Fact label="Age rating">
+              <span className="flex items-start gap-2">
+                <RatingChip rating={m.ageRating} small />
+                <span className="text-xs text-mute">{m.ageRating.description}</span>
+              </span>
+            </Fact>
+          </dl>
+          {restricted && (
+            <div className="mt-6 rounded-xl border border-brass/40 bg-brass/10 px-4 py-3">
+              <p className="overline text-brass">Warning</p>
+              <p className="mt-1.5 text-xs leading-[1.3] text-screen/90">
+                <span className="font-bold text-velvet">{m.ageRating.code}</span> · {m.ageRating.description}
+              </p>
             </div>
-            <NotifyButton movie={m} />
-          </section>
-        ) : (
-          <Sessions movie={m} />
-        )}
+          )}
+        </aside>
       </div>
     </article>
   )
