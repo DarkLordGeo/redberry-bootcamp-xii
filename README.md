@@ -2,6 +2,8 @@
 
 Cinema booking app for Redberry Bootcamp XII: browse what's showing across four venues, filter sessions, pick seats on a live hall map, and pay — built against the [Kino XII API](https://api.kinoxii.redberryinternship.ge/docs).
 
+**Live:** https://darklordgeo.github.io/redberry-bootcamp-xii/
+
 Full brief (translated): [docs/ASSIGNMENT.md](docs/ASSIGNMENT.md)
 
 ## Run it
@@ -11,6 +13,7 @@ cd frontend
 npm install
 npm run dev        # http://localhost:5173
 npm run build      # production build in frontend/dist
+BASE_PATH=/redberry-bootcamp-xii/ npm run build   # build for GitHub Pages
 ```
 
 `VITE_API_URL` defaults to `https://api.kinoxii.redberryinternship.ge/api` (see `.env.example`).
