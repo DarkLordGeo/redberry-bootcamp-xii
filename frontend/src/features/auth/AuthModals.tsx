@@ -6,7 +6,7 @@ import { ApiError } from '@/api/client'
 import { login, register as registerUser } from '@/api/endpoints'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
-import { FormError, TextField, FieldShell } from '@/components/ui/Field'
+import { FormError, TextField } from '@/components/ui/Field'
 import { loginSchema, registerSchema, type LoginValues, type RegisterValues } from '@/lib/validation'
 import { useAuth } from '@/state/auth'
 import { useModals } from '@/state/modals'
@@ -59,6 +59,8 @@ function LoginForm({ onDone }: { onDone: () => void }) {
 
   const email = fieldState(form, 'email')
   const password = fieldState(form, 'password')
+  const [emailValue, passwordValue] = form.watch(['email', 'password'])
+  const filled = !!emailValue && !!passwordValue
 
   return (
     <form
@@ -80,13 +82,13 @@ function LoginForm({ onDone }: { onDone: () => void }) {
         {...password}
         {...form.register('password')}
       />
-      <Button type="submit" size="lg" loading={mutation.isPending} className="mt-1 w-full">
-        Log In
+      <Button type="submit" loading={mutation.isPending} disabled={!filled} className="mt-2 w-full">
+        Log in
       </Button>
-      <p className="text-center text-sm text-mute">
+      <p className="text-center text-[13px] text-mute">
         Don’t have an account?{' '}
-        <button type="button" className="font-semibold text-velvet hover:underline" onClick={() => switchAuth('register')}>
-          Sign Up
+        <button type="button" className="font-bold text-velvet hover:underline" onClick={() => switchAuth('register')}>
+          Sign up
         </button>
       </p>
     </form>
@@ -111,31 +113,29 @@ function AvatarPicker({
   }, [file])
 
   return (
-    <FieldShell id="register-avatar" label="Avatar" error={error} hint="Optional. JPG, PNG or WebP.">
-      <div className="flex items-center gap-4">
-        <div className={`grid size-16 shrink-0 place-items-center overflow-hidden rounded-full border bg-ink-3 ${error ? 'border-err' : 'border-line'}`}>
+    <div>
+      <div className="flex items-center gap-3">
+        <div className={`grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg border bg-ink-3 ${error ? 'border-err' : 'border-line'}`}>
           {preview && !error ? (
             <img src={preview} alt="Avatar preview" className="size-full object-cover" />
           ) : (
-            <svg viewBox="0 0 24 24" className="size-7 text-mute" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+            <svg viewBox="0 0 24 24" className="size-5 text-mute" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
               <circle cx="12" cy="9" r="4" />
               <path d="M4.5 20c1.4-3.6 4.2-5.4 7.5-5.4s6.1 1.8 7.5 5.4" strokeLinecap="round" />
             </svg>
           )}
         </div>
-        <div className="flex gap-2">
-          <label
-            htmlFor="register-avatar"
-            className="inline-flex h-9 items-center rounded-md border border-line bg-ink-2 px-3 text-sm font-semibold hover:border-mute"
-          >
-            {file ? 'Change image' : 'Upload image'}
+        <div className="min-w-0 flex-1">
+          <label htmlFor="register-avatar" className="text-sm font-bold hover:underline">
+            {file ? 'Change avatar' : 'Upload avatar'} <span className="font-normal text-mute">(optional)</span>
           </label>
-          {file && (
-            <Button variant="ghost" size="sm" onClick={() => onChange(null)}>
-              Remove
-            </Button>
-          )}
+          <p className="mt-0.5 text-xs text-mute">JPG, PNG or WEBP</p>
         </div>
+        {file && (
+          <Button variant="ghost" size="sm" onClick={() => onChange(null)}>
+            Remove
+          </Button>
+        )}
         <input
           id="register-avatar"
           type="file"
@@ -147,7 +147,12 @@ function AvatarPicker({
           }}
         />
       </div>
-    </FieldShell>
+      {error && (
+        <p role="alert" className="mt-1.5 text-[13px] text-err">
+          {error}
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -172,6 +177,8 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
     onError: (err) => setFormError(applyServerErrors(form, err)),
   })
   const avatar = form.watch('avatar')
+  const [u, e, p1, p2] = form.watch(['username', 'email', 'password', 'password_confirmation'])
+  const filled = !!(u && e && p1 && p2)
 
   return (
     <form
@@ -183,8 +190,14 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
       className="flex flex-col gap-4"
     >
       <FormError message={formError} />
+      <AvatarPicker
+        file={avatar}
+        error={form.formState.errors.avatar?.message}
+        onChange={(f) => form.setValue('avatar', f, { shouldValidate: true, shouldDirty: true })}
+      />
       <TextField id="register-username" label="Username" autoComplete="username" required {...fieldState(form, 'username')} {...form.register('username')} />
       <TextField id="register-email" label="Email" type="email" autoComplete="email" required {...fieldState(form, 'email')} {...form.register('email')} />
+      <div className="grid grid-cols-2 gap-3">
       <TextField
         id="register-password"
         label="Password"
@@ -207,18 +220,14 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
         {...fieldState(form, 'password_confirmation')}
         {...form.register('password_confirmation')}
       />
-      <AvatarPicker
-        file={avatar}
-        error={form.formState.errors.avatar?.message}
-        onChange={(f) => form.setValue('avatar', f, { shouldValidate: true, shouldDirty: true })}
-      />
-      <Button type="submit" size="lg" loading={mutation.isPending} className="mt-1 w-full">
-        Sign Up
+      </div>
+      <Button type="submit" loading={mutation.isPending} disabled={!filled} className="mt-2 w-full">
+        Sign up
       </Button>
-      <p className="text-center text-sm text-mute">
+      <p className="text-center text-[13px] text-mute">
         Already have an account?{' '}
-        <button type="button" className="font-semibold text-velvet hover:underline" onClick={() => switchAuth('login')}>
-          Log In
+        <button type="button" className="font-bold text-velvet hover:underline" onClick={() => switchAuth('login')}>
+          Log in
         </button>
       </p>
     </form>
@@ -229,10 +238,10 @@ export function AuthModals() {
   const { authModal, finishAuth } = useModals()
   return (
     <>
-      <Modal open={authModal === 'login'} onClose={() => finishAuth(false)} title="Log In">
+      <Modal open={authModal === 'login'} onClose={() => finishAuth(false)} title="Log in" subtitle="Welcome back to Kino XII">
         <LoginForm onDone={() => finishAuth(true)} />
       </Modal>
-      <Modal open={authModal === 'register'} onClose={() => finishAuth(false)} title="Create an account">
+      <Modal open={authModal === 'register'} onClose={() => finishAuth(false)} title="Sign up" subtitle="Welcome to Kino XII" width="max-w-[480px]">
         <RegisterForm onDone={() => finishAuth(true)} />
       </Modal>
     </>

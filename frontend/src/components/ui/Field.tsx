@@ -14,7 +14,7 @@ interface FieldShellProps {
 export function FieldShell({ id, label, required, error, valid, hint, children }: FieldShellProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-mute">
+      <label htmlFor={id} className="text-[13px] font-semibold text-screen">
         {label}
         {required && <span className="text-velvet-hi"> *</span>}
       </label>
@@ -45,7 +45,7 @@ export function FieldShell({ id, label, required, error, valid, hint, children }
 }
 
 export const inputClass = (error?: string, valid?: boolean) =>
-  `h-11 w-full rounded-md border bg-ink-3 px-3 pr-9 text-[15px] text-screen placeholder:text-mute/70 outline-none transition-colors
+  `h-11 w-full rounded-lg border bg-ink-3 px-3.5 pr-9 text-sm text-screen placeholder:text-mute/70 outline-none transition-colors
    disabled:cursor-not-allowed disabled:opacity-60 focus:border-velvet ${
      error ? 'border-err' : valid ? 'border-ok' : 'border-line'
    }`
