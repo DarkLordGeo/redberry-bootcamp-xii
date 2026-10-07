@@ -25,6 +25,10 @@ export function Spinner({ className = '' }: { className?: string }) {
   )
 }
 
+/** Button styling for links that look like buttons (avoids nesting <button> in <a>). */
+export const buttonClass = (variant: Variant = 'primary', size: Size = 'md') =>
+  `inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors ${variants[variant]} ${sizes[size]}`
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   size?: Size
